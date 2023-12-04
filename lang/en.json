@@ -1,0 +1,68 @@
+{
+	"enhancedcombathud-mutant-year-zero" : {
+		"Titles" : {
+			"ActionAction"				: "ACTIONS",
+			"ManeuverAction"			: "MANEUVERS",
+			"ReAction"					: "REACTIONS",
+			"Flee"						: "Flee",
+			"WPG"						: "Wrestle",
+			"Survey"					: "Survey",
+			"TreatInjuries"				: "Treat injuries",
+			"DrawWeapon"				: "Draw weapon",
+			"Standup"					: "Stand up",
+			"Move"						: "Move",
+			"TakeCover"					: "Take cover",
+			"Dodge"						: "Dodge",
+			"Parry"						: "Parry",
+			"BreakFree"					: "Break free",
+			"Chase"						: "Chase",
+			"Help"						: "Help",
+			"Hinder"					: "Hinder",
+			"Reload"					: "Reload",
+			"Defend"					: "Defend"
+		},
+		
+		"Descriptions" : {
+			"Flee"						: "See Mutant Year Zero core rules book p.??",
+			"WPG"						: "See Mutant Year Zero core rules book p.??",
+			"Survey"					: "See Mutant Year Zero core rules book p.??",
+			"TreatInjuries"				: "See Mutant Year Zero core rules book p.??",
+			"DrawWeapon"				: "See Mutant Year Zero core rules book p.??",
+			"Standup"					: "See Mutant Year Zero core rules book p.??",
+			"Move"						: "See Mutant Year Zero core rules book p.??",
+			"TakeCover"					: "See Mutant Year Zero core rules book p.??",
+			"Dodge"						: "See Mutant Year Zero core rules book p.??",
+			"Parry"						: "See Mutant Year Zero core rules book p.??",
+			"BreakFree"					: "See Mutant Year Zero core rules book p.??",
+			"Chase"						: "See Mutant Year Zero core rules book p.??",
+			"Help"						: "See Mutant Year Zero core rules book p.??",
+			"Hinder"					: "See Mutant Year Zero core rules book p.??",
+			"Reload"					: "See Mutant Year Zero core rules book p.??",
+			"Defend"					: "See Mutant Year Zero core rules book p.??"
+		},
+		
+		"Settings" : {
+			"ConsumeResourcePoints" : {
+				"name"					: "Consume resource points",
+				"descrp"				: "If resource points should be consumed on ability use"				
+			},
+			"ConsumeBullets" : {
+				"name"					: "Consume Bullets",
+				"descrp"				: "If bullets should be consumed when a ranged weapon is used"				
+			},
+			"ShowTalents" : {
+				"name"					: "Show talents button",
+				"descrp"				: "If a button for talents should be shown"				
+			},
+			"UseDiceCircles" : {
+				"name"					: "Use dice symbols",
+				"descrp"				: "If dice symbols instead of numbers should be used for Skills and Attributes"				
+			}
+		}
+	},
+	
+    "enhancedcombathud.themeOptions.mainAction" : "Action Colors",
+    "enhancedcombathud.themeOptions.bonusAction" : "Maneuver Colors",
+    "enhancedcombathud.themeOptions.freeAction" : "Not used by Argon MYZ",
+    "enhancedcombathud.themeOptions.reaction" : "Reaction Colors"
+}

@@ -1,0 +1,63 @@
+{
+  "id": "enhancedcombathud-yzecoriolis",
+  "title": "Argon - Combat HUD (CORIOLIS)",
+  "description": "An Argon version for the Coriolis System",
+  "authors": [
+    {
+    "name": "saibot"
+    }
+  ],
+  "version": "0.0.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  },
+  "socket": "true",
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json",
+      "flags": {}
+    }
+  ],
+  "styles": [
+    "styles/MYZCustom.css"
+  ],
+  "esmodules": [
+	"scripts/settings.js",
+	"scripts/coriolisui.js"
+  ],
+  "relationships": {
+	"requires": [
+		{
+			"id": "enhancedcombathud",
+			"type": "module",
+			"compatibility": {}
+		}
+	],
+	"systems": [
+		{
+			"id": "yzecoriolis",
+			"type": "system",
+			"compatibility": {}
+		}
+	]
+  },
+  "compatibility": {
+	"minimum": "11",
+	"verified": "11"
+  },
+  "url": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis",
+  "download": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/archive/refs/tags/v0.0.0.zip",
+  "manifest": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/releases/latest/download/module.json",
+  "readme": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/blob/main/README.md",
+  "changelog": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/blob/main/CHANGELOG.md",
+  "allowBugReporter": true
+}

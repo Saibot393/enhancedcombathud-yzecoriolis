@@ -1,0 +1,68 @@
+{
+	"enhancedcombathud-mutant-year-zero" : {
+		"Titles" : {
+			"ActionAction"				: "AKTIONEN",
+			"ManeuverAction"			: "MANEUVER",
+			"ReAction"					: "REAKTIONEN",
+			"Flee"						: "Flüchten",
+			"WPG"						: "Ringen",
+			"Survey"					: "Überblicken",
+			"TreatInjuries"				: "Behandeln",
+			"DrawWeapon"				: "Waffe ziehen",
+			"Standup"					: "Aufstehen",
+			"Move"						: "Bewegen",
+			"TakeCover"					: "Deckung",
+			"Dodge"						: "Ausweichen",
+			"Parry"						: "Parieren",
+			"BreakFree"					: "Losreißen",
+			"Chase"						: "Verfolgen",
+			"Help"						: "Helfen",
+			"Hinder"					: "Hindern",
+			"Reload"					: "Nachladen",
+			"Defend"					: "Verteidigen"
+		},
+		
+		"Descriptions" : {
+			"Flee"						: "Siehe Mutant Year Zero Regelbuch S.??",
+			"WPG"						: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Survey"					: "Siehe Mutant Year Zero Regelbuch S.??",
+			"TreatInjuries"				: "Siehe Mutant Year Zero Regelbuch S.??",
+			"DrawWeapon"				: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Standup"					: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Move"						: "Siehe Mutant Year Zero Regelbuch S.??",
+			"TakeCover"					: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Dodge"						: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Parry"						: "Siehe Mutant Year Zero Regelbuch S.??",
+			"BreakFree"					: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Chase"						: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Help"						: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Hinder"					: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Reload"					: "Siehe Mutant Year Zero Regelbuch S.??",
+			"Defend"					: "Siehe Mutant Year Zero Regelbuch S.??"
+		},
+		
+		"Settings" : {
+			"ConsumeResourcePoints" : {
+				"name"					: "Verbrauche Resourcen Punkte",
+				"descrp"				: "Ob Resourcen Punkte beim Einsatz von Fertigkeiten verbraucht werden sollen"				
+			},
+			"ConsumeBullets" : {
+				"name"					: "Verbrauche Kugeln",
+				"descrp"				: "Ob Kugeln beim Einsatz von Fernkampfwaffen verbraucht werden sollen"				
+			},
+			"ShowTalents" : {
+				"name"					: "Zeige Talente Knopf",
+				"descrp"				: "Ob ein Knopf für Talente angezeigt werden soll"				
+			},
+			"UseDiceCircles" : {
+				"name"					: "Nutze Würfel Symbole",
+				"descrp"				: "Ob Würfel Symbole anstatt Zahlen für Attribute und Fertigkeiten angezeigt werden sollen"				
+			}
+		}
+	},
+	
+    "enhancedcombathud.themeOptions.mainAction" : "Farben Aktion",
+    "enhancedcombathud.themeOptions.bonusAction" : "Farben Maneuver",
+    "enhancedcombathud.themeOptions.freeAction" : "Nicht von Argon MYZ genutzt",
+    "enhancedcombathud.themeOptions.reaction" : "Farben Reaktion"
+}
