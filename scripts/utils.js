@@ -98,33 +98,35 @@ async function getTooltipDetails(item, actortype) {
 	return { title, description, subtitle, details, properties , propertiesLabel, footerText: comment };
 }
 
-function openRollDialoge(rollType, rollName, rollActor, rollitem = undefined) {
+function openRollDialoge(rollType, rollID, rollActor, rollitem = undefined) {
 	let attributeKey;
 	let attribute;
 	let skillKey;
 	let skill;
 	
+	let item = null;
+	
 	let coriolisrollType = rollType;
 	
-	if (rollType == "attribute") {
-		attributeKey = rollName;
-		attribute = rollActor.system.attributes[attributeKey];
+	switch(rollType) {
+		case "attribute":
+			attributeKey = rollID;
+			attribute = rollActor.system.attributes[attributeKey];
+			break;
+		case "skill":
+			skillKey = rollID;
+			skill = rollActor.system.skills[skillKey];
+			attributeKey = skill.attribute;
+			attribute = rollActor.system.attributes[attributeKey];
+			
+			coriolisrollType = skill.category;
+			break;
+		case "weapon":
+		case "explosive":
+			item = rollActor.items.get(rollID);
+			break;
 	}
 	
-	console.log(rollType, rollName);
-	
-	if (rollType == "skill") {
-		skillKey = rollName;
-		skill = rollActor.system.skills[skillKey];
-		attributeKey = skill.attribute;
-		attribute = rollActor.system.attributes[attributeKey];
-		
-		coriolisrollType = skill.category;
-	}
-	
-	console.log(skillKey, skill, attributeKey, attribute);
-	
-    const item = null;
     const rollData = {
       actorType: rollActor.type,
       rollType: coriolisrollType,
@@ -134,18 +136,18 @@ function openRollDialoge(rollType, rollName, rollActor, rollitem = undefined) {
       skill: skill ? skill.value : 0,
       modifier: 0,
       bonus: 0,
-      rollTitle: rollName,
+      rollTitle: rollID,
       pushed: false,
-      isAutomatic: false,
-      isExplosive: false,
-      blastPower: false,
-      blastRadius: false,
-      damage: false,
-      damageText: false,
-      range: false,
-      crit: false,
-      critText: false,
-      features: false,
+      isAutomatic: item?.automatic,
+      isExplosive: item?.explosive,
+      blastPower: item?.blastPower,
+      blastRadius: item?.blastRadius,
+      damage: item?.damage,
+      damageText: item?.damageText,
+      range: item?.range,
+      crit: item?.crit?.numericValue,
+      critText: item?.crit?.customValue,
+      features: item?.special ? Object.values(item.special).join(", ") : "",
     };
 	
 	console.log(rollData);

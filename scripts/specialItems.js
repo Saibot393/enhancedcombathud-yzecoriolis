@@ -29,6 +29,23 @@ function registerCORIOLISECHSItems () {
 				description : game.i18n.localize(ModuleName+".Descriptions.Hinder")
 			}
 		}
+		
+		/*
+			firstAid:
+			Tinkering:
+			
+			Reload
+			
+			TakeCover
+			Duck
+			StandUp
+			DrawWeapon
+			Parry
+			Opportunity
+			Overwatch
+			
+			Defend
+		*/
 	}
 	
 	CORIOLISECHManeuverItems = {

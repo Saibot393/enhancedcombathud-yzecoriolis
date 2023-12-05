@@ -7,37 +7,30 @@ Hooks.on("argonInit", (CoreHUD) => {
   
 	registerCORIOLISECHSItems();
   
-	function consumeAction(type) {
-		switch (type) {
-			case "action":
-				ui.ARGON.components.main[0].isActionUsed = true;
-				ui.ARGON.components.main[0].updateActionUse();
-				break;
-			case "maneuver":
-				if (ui.ARGON.components.main[1].isActionUsed) {
-					ui.ARGON.components.main[0].isActionUsed = true;
-					ui.ARGON.components.main[0].updateActionUse();
-				}
-				else {
-					ui.ARGON.components.main[1].isActionUsed = true;
-					ui.ARGON.components.main[1].updateActionUse()
-				}
-				break;
-			case "react":
-				consumeAction("action");
-				break;
+	function consumeAction(amount) {
+		if (ui.ARGON.components.main[0].actionsLeft >= amount) {
+			ui.ARGON.components.main[0].actionsLeft = ui.ARGON.components.main[0].actionsLeft - amount;
+			return true;
 		}
+		
+		return false;
 	}
   
     class CORIOLISPortraitPanel extends ARGON.PORTRAIT.PortraitPanel {
 		constructor(...args) {
 			super(...args);
+			
+			Hooks.on("updateItem", (item, changes, infos, userid) => {
+				if (item.actor == this.actor) {
+					if (changes?.system?.hasOwnProperty("equipped")) {
+						this.render();
+					}
+				}
+			});
 		}
 
 		get description() {
-			const { system } = this.actor;
-			
-			return `${system.role}, ${system.rank}`;
+			return `${this.actor.system.bio.concept}`;
 		}
 
 		get isDead() {
@@ -48,65 +41,22 @@ Hooks.on("argonInit", (CoreHUD) => {
 			let ActiveArmor = canvas.tokens.controlled[0].actor.items.filter(item => item.type == "armor" && item.system.equipped);
 			
 			let ArmorValue = 0;
+			let usedArmor = undefined;
 			
-			ActiveArmor.forEach(armoritem => ArmorValue = ArmorValue + armoritem.system.armorRating)
-			
-			if (ArmorValue > 0) {
-				ActiveArmor = ArmorValue;			
-			}
+			ActiveArmor.forEach((armoritem) => {if (armoritem.system.armorRating > ArmorValue) {ArmorValue = armoritem.system.armorRating; usedArmor = armoritem;}});
 			
 			let Blocks = [];
 			
-			if (ActiveArmor) {
+			if (usedArmor) {
 				Blocks.push([
 					{
-						text: game.i18n.localize(ActiveArmor.label),
+						text: game.i18n.localize(usedArmor.name),
 					},
 					{
-						text: ActiveArmor.value,
+						text: usedArmor.system.armorRating,
 						color: "var(--ech-movement-baseMovement-background)",
 					},
 				]);
-			}
-			
-			return Blocks;
-		}
-		
-		async getsideStatBlocks() {
-			let attributes = this.actor.system.attributes;
-			
-			let Blocks = {left : [], right : []};
-			
-			for (let key of Object.keys(attributes)) {
-				if (attributes[key].value < attributes[key].max || key == "strength") {
-					let position = "";
-					
-					switch(key) {
-						case "agility" :
-						case "strength":
-							position = "left";
-							break;
-						case "empathy" :
-						case "wits":
-							position = "right";
-							break;
-					}
-					
-					Blocks[position].unshift([
-						{
-							text: game.i18n.localize(`CORIOLIS.ATTRIBUTE_${key.toUpperCase()}`).toUpperCase().slice(0,3),
-						},
-						{
-							text: attributes[key].value,
-						},
-						{
-							text: "/",
-						},
-						{
-							text: attributes[key].max
-						}
-					]);
-				}
 			}
 			
 			return Blocks;
@@ -136,15 +86,17 @@ Hooks.on("argonInit", (CoreHUD) => {
 						break;
 				}
 				
-				let html = `<div class="bar" style="display:flex;flex-direction:column-reverse;border:1px solid #a4a4a4;padding:0px 5px 0px 5px;background-color:rgba(113, 130, 190, 0.35);border-radius:2px">`;
-				
-				for (let i = 1; i <= this.actor.system[bartype].max; i++) {
-					html = html + `<div style="background-color:${i<=this.actor.system[bartype].value ? fillcolor : "#000000"};width:${1.6 * size}px;height:${size}px;margin-top:1.75px;margin-right:1px;margin-bottom:1.75px;margin-left:1px;border-radius:2px"></div>`;
-				}
-				
-				html = html + `</div>`;
+				if (!(bartype == "radiation") || this.actor.system[bartype].value > 0) {
+					let html = `<div class="bar" style="display:flex;flex-direction:column-reverse;border:1px solid #a4a4a4;padding:0px 5px 0px 5px;background-color:rgba(113, 130, 190, 0.35);border-radius:2px">`;
 					
-				bars[side].push(html);
+					for (let i = 1; i <= this.actor.system[bartype].max; i++) {
+						html = html + `<div style="background-color:${i<=this.actor.system[bartype].value ? fillcolor : "#000000"};width:${1.6 * size}px;height:${size}px;margin-top:1.75px;margin-right:1px;margin-bottom:1.75px;margin-left:1px;border-radius:2px"></div>`;
+					}
+					
+					html = html + `</div>`;
+						
+					bars[side].push(html);
+				}
 			}
 			/*
 			let rot = this.actor.system.rot;
@@ -347,6 +299,8 @@ Hooks.on("argonInit", (CoreHUD) => {
     class CORIOLISActionActionPanel extends ARGON.MAIN.ActionPanel {
 		constructor(...args) {
 			super(...args);
+			
+			this.actionsLeft = this.maxActions;
 		}
 
 		get label() {
@@ -354,15 +308,15 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		get maxActions() {
-            return 1;
+            return 3;
         }
 		
 		get currentActions() {
-			return this.isActionUsed ? 0 : 1;
+			return this.actionsLeft;
 		}
 		
 		_onNewRound(combat) {
-			this.isActionUsed = false;
+			this.actionsLeft = this.maxActions;
 			this.updateActionUse();
 		}
 		
@@ -374,44 +328,6 @@ Hooks.on("argonInit", (CoreHUD) => {
 			buttons.push(new CORIOLISItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])));
 			buttons.push(new CORIOLISButtonPanelButton({type: "ability", color: 0}));
-			
-			return buttons.filter(button => button.items == undefined || button.items.length);
-		}
-    }
-	
-    class CORIOLISManeuverActionPanel extends ARGON.MAIN.ActionPanel {
-		constructor(...args) {
-			super(...args);
-		}
-
-		get label() {
-			return ModuleName+".Titles.ManeuverAction";
-		}
-		
-		get maxActions() {
-            return 1;
-        }
-		
-		get currentActions() {
-			return this.isActionUsed ? 0 : 1;
-		}
-		
-		_onNewRound(combat) {
-			this.isActionUsed = false;
-			this.updateActionUse();
-		}
-		
-		async _getButtons() {
-			const specialActions = Object.values(CORIOLISECHManeuverItems);
-
-			const buttons = [
-				new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])),
-				new CORIOLISButtonPanelButton({type: "gear", color: 1})
-			];
-			if (game.settings.get(ModuleName, "ShowTalents")) {
-				buttons.push(new CORIOLISButtonPanelButton({type: "talent", color: 1}));
-			}
-			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[2]), new CORIOLISSpecialActionButton(specialActions[3])));
 			
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
@@ -740,7 +656,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async getDefaultSets() {
-			let attacks = this.actor.items.filter((item) => item.type === "weapon");
+			let attacks = this.actor.items.filter((item) => item.type === "weapon" || item.type === "explosive");
 			
 			return {
 				1: {
@@ -789,7 +705,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 				event.stopPropagation();
 				const data = JSON.parse(event.dataTransfer.getData("text/plain"));
 				const item = await fromUuid(data.uuid);
-				if(item?.type !== "weapon") return;
+				if(!["weapon", "explosive"].includes(item?.type)) return;
 				const set = event.currentTarget.dataset.set;
 				const slot = event.currentTarget.dataset.slot;
 				const sets = this.actor.getFlag("enhancedcombathud", "weaponSets") || {};
@@ -824,7 +740,6 @@ Hooks.on("argonInit", (CoreHUD) => {
     CoreHUD.defineDrawerPanel(CORIOLISDrawerPanel);
     CoreHUD.defineMainPanels([
 		CORIOLISActionActionPanel,
-		CORIOLISManeuverActionPanel,
 		CORIOLISReactionActionPanel,
 		ARGON.PREFAB.PassTurnPanel
     ]);  
