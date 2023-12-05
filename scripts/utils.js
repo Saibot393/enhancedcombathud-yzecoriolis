@@ -1,4 +1,5 @@
-const ModuleName = "yzecoriolis";
+const ModuleName = "enhancedcombathud-yzecoriolis";
+import { coriolisModifierDialog, coriolisRoll } from "/systems/yzecoriolis/module/coriolis-roll.js";
 
 async function getTooltipDetails(item, actortype) {
 	let title, description, itemType, creatureType, skillmodifiers, attributemodifiers, validskills, category, subtitle, range, damage, bonus, quantity, comment, requirement;
@@ -97,202 +98,67 @@ async function getTooltipDetails(item, actortype) {
 	return { title, description, subtitle, details, properties , propertiesLabel, footerText: comment };
 }
 
-function openRollDialoge(rollType, rollName, rollActor, rollitem = undefined) { //adapted from MYZ system code
-	let rollData = {};
+function openRollDialoge(rollType, rollName, rollActor, rollitem = undefined) {
+	let attributeKey;
+	let attribute;
+	let skillKey;
+	let skill;
 	
-	let applyedModifiersInfo;
+	let coriolisrollType = rollType;
 	
-	switch (rollType) {
-		case "skill":
-			const skill = rollActor.items.find(item => item.type == rollType && item.system.skillKey == rollName);
-			
-			const diceTotals = rollActor.sheet._getRollModifiers(skill);
-            diceTotals.gearDiceTotal = Math.max(0, diceTotals.gearDiceTotal);
-			
-			applyedModifiersInfo = rollActor.sheet._getModifiersInfo(diceTotals);
-			
-            let skillName = "";
-            if (skill.system.skillKey == "") {
-                skillName = skill.name;
-            } else {
-                skillName = game.i18n.localize(`MYZ.SKILL_${skill.system.skillKey}`);
-            }
-			
-			rollData = {
-				rollName : skillName,
-			
-				attributeName : skill.system.attribute,
-			
-				baseDefault: diceTotals.baseDiceTotal,
-				skillDefault: diceTotals.skillDiceTotal,
-				gearDefault: diceTotals.gearDiceTotal,
-				
-				applyedModifiers: applyedModifiersInfo,
-				
-				skillItem : skill
-			}
-			break;	
-		case "attribute":
-			const attributeValue = rollActor.system.attributes[rollName].value;
-			
-			const attributeName = `MYZ.ATTRIBUTE_${rollName.toUpperCase()}_${rollActor.system.creatureType.toUpperCase()}`;
-			
-			const items = rollActor.items.filter(item => item.system.modifiers != undefined);
-			const modifierItems = items.filter(item => item.system.modifiers[rollName] != 0);
-			let attributeModifiers = [];
-			const baseDiceModifier = modifierItems.reduce(function (modifier, item) {
-				attributeModifiers.push({ 'type': item.type, 'name': item.name, 'value': item.system.modifiers[rollName] })
-				return modifier + item.system.modifiers[rollName];
-			}, 0);
-			
-			let baseDiceTotal = parseInt(attributeValue) + parseInt(baseDiceModifier)
-			if(baseDiceTotal<0) baseDiceTotal = 0;
-			
-			applyedModifiersInfo = rollActor.sheet._getModifiersInfo({
-				skillDiceTotal: 0,
-				baseDiceTotal: baseDiceTotal,
-				gearDiceTotal: 0,
-				modifiersToSkill: [],
-				modifiersToAttributes: attributeModifiers,
-				modifiersToGear: []
-			});
-			
-			rollData = {
-				rollName: attributeName, //this is confusing
-				
-				attributeName: rollName, //isn't it?
-				
-				baseDefault: baseDiceTotal,
-				applyedModifiers: applyedModifiersInfo
-			}
-			break;
+	if (rollType == "attribute") {
+		attributeKey = rollName;
+		attribute = rollActor.system.attributes[attributeKey];
 	}
 	
-	if (rollitem) {
-		rollData.gearDefault = Math.max(parseInt(rollitem.system.bonus.value), 0),
-		rollData.modifierDefault = rollitem.system.skillBonus,
-		rollData.artifactDefault = rollitem.system.artifactBonus || 0,
-		rollData.damage = rollitem.system.damage,
-		rollData.rollName = rollitem.name;
+	console.log(rollType, rollName);
+	
+	if (rollType == "skill") {
+		skillKey = rollName;
+		skill = rollActor.system.skills[skillKey];
+		attributeKey = skill.attribute;
+		attribute = rollActor.system.attributes[attributeKey];
+		
+		coriolisrollType = skill.category;
 	}
 	
-	game.myz.RollDialog.prepareRollDialog({...{
-		rollName: "",
-		attributeName : "",
-		diceRoller: rollActor.sheet.diceRoller,
-		baseDefault: 0,
-		skillDefault: 0,
-		gearDefault: 0,
-		modifierDefault: 0,
-		actor : rollActor,
-		applyedModifiers: {}
-	}, ...rollData});
+	console.log(skillKey, skill, attributeKey, attribute);
+	
+    const item = null;
+    const rollData = {
+      actorType: rollActor.type,
+      rollType: coriolisrollType,
+      attributeKey: attributeKey,
+      attribute: attribute ? attribute.value : 0,
+      skillKey: skillKey,
+      skill: skill ? skill.value : 0,
+      modifier: 0,
+      bonus: 0,
+      rollTitle: rollName,
+      pushed: false,
+      isAutomatic: false,
+      isExplosive: false,
+      blastPower: false,
+      blastRadius: false,
+      damage: false,
+      damageText: false,
+      range: false,
+      crit: false,
+      critText: false,
+      features: false,
+    };
+	
+	console.log(rollData);
+	
+    const chatOptions = rollActor._prepareChatRollOptions(
+      "systems/yzecoriolis/templates/sidebar/roll.html",
+      rollType
+    );
+    coriolisModifierDialog((modifier, additionalData) => {
+      rollData.modifier = modifier;
+      rollData.additionalData = additionalData;
+      coriolisRoll(chatOptions, rollData);
+    }, false);
 }
 
-function openItemRollDialoge(item, actor) {
-	if (item && actor) {
-		let skill;
-		
-		switch (item.system.category) {
-			case "melee":
-				switch(actor.system.creatureType) {
-					case "robot":
-						skill = "ASSAULT";
-						break;
-					default:
-						skill = "FIGHT";
-						break;
-				}
-				break;
-			case "ranged":
-				skill = "SHOOT";
-				break;
-		}
-		
-		openRollDialoge("skill", skill, actor, item);
-	}
-}
-
-
-export { ModuleName, getTooltipDetails, openRollDialoge, openItemRollDialoge }
-
-/*
-    _onRollAttribute(event) {
-        event.preventDefault();
-        const attName = $(event.currentTarget).data("attribute");
-        const attVal = this.actor.system.attributes[attName].value;
-        let rollName = `MYZ.ATTRIBUTE_${attName.toUpperCase()}_${this.actor.system.creatureType.toUpperCase()}`;
-
-        const itmMap = this.actor.items.filter(itm => itm.system.modifiers != undefined)
-        const itemsThatModifyAttribute = itmMap.filter(i => i.system.modifiers[attName] != 0)
-        let modifiersToAttributes = []
-        const baseDiceModifier = itemsThatModifyAttribute.reduce(function (acc, obj) {
-            modifiersToAttributes.push({ 'type': obj.type, 'name': obj.name, 'value': obj.system.modifiers[attName] })
-            return acc + obj.system.modifiers[attName];
-        }, 0);
-        let baseDiceTotal = parseInt(attVal) + parseInt(baseDiceModifier)
-        if(baseDiceTotal<0) baseDiceTotal = 0;
-
-        const applyedModifiersInfo = this._getModifiersInfo({
-            skillDiceTotal: 0,
-            baseDiceTotal: baseDiceTotal,
-            gearDiceTotal: 0,
-            modifiersToSkill: [],
-            modifiersToAttributes: modifiersToAttributes,
-            modifiersToGear: []
-        })
-
-        RollDialog.prepareRollDialog({
-            rollName: rollName,
-            attributeName: attName,
-            diceRoller: this.diceRoller,
-            baseDefault: baseDiceTotal,
-            skillDefault: 0,
-            gearDefault: 0,
-            modifierDefault: 0,
-            applyedModifiers: applyedModifiersInfo
-        });
-    }
-	
-*/
-
-/*
-    _onRollSkill(event) {
-        event.preventDefault();
-        const element = event.currentTarget;
-        const itemId = $(element).data("item-id");
-        if (itemId) {
-            //FIND OWNED SKILL ITEM AND CREARE ROLL DIALOG
-            const skill = this.actor.items.find((element) => element.id == itemId);
-            const attName = skill.system.attribute;
-            // Apply any modifiers from items or crits
-            const diceTotals = this._getRollModifiers(skill);
-            diceTotals.gearDiceTotal = Math.max(0, diceTotals.gearDiceTotal)
-
-            // SEE IF WE CAN USE SKILL KEY TO TRANSLATE THE NAME
-            let skillName = "";
-            if (skill.system.skillKey == "") {
-                skillName = skill.name;
-            } else {
-                skillName = game.i18n.localize(`MYZ.SKILL_${skill.system.skillKey}`);
-            }
-
-            const applyedModifiersInfo = this._getModifiersInfo(diceTotals);
-            //console.warn(applyedModifiersInfo)
-
-            RollDialog.prepareRollDialog({
-                rollName: skillName,
-                attributeName: attName,
-                diceRoller: this.diceRoller,
-                baseDefault: diceTotals.baseDiceTotal,
-                skillDefault: diceTotals.skillDiceTotal,
-                gearDefault: diceTotals.gearDiceTotal,
-                modifierDefault: 0,
-                applyedModifiers: applyedModifiersInfo,
-                actor: this.actor,
-                skillItem: skill
-            });
-        }
-    }
-	
-	*/
+export { ModuleName, getTooltipDetails, openRollDialoge }

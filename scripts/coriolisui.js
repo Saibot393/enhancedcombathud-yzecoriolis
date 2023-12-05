@@ -1,11 +1,11 @@
-import {registerMYZECHSItems, MYZECHActionItems, MYZECHManeuverItems, MYZECHReactionItems} from "./specialItems.js";
-import {ModuleName, getTooltipDetails, openRollDialoge, openItemRollDialoge} from "./utils.js";
+import {registerCORIOLISECHSItems, CORIOLISECHActionItems, CORIOLISECHManeuverItems, CORIOLISECHReactionItems} from "./specialItems.js";
+import {ModuleName, getTooltipDetails, openRollDialoge} from "./utils.js";
 import {openNewInput} from "./popupInput.js";
 
 Hooks.on("argonInit", (CoreHUD) => {
     const ARGON = CoreHUD.ARGON;
   
-	registerMYZECHSItems();
+	registerCORIOLISECHSItems();
   
 	function consumeAction(type) {
 		switch (type) {
@@ -29,7 +29,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 	}
   
-    class MYZPortraitPanel extends ARGON.PORTRAIT.PortraitPanel {
+    class CORIOLISPortraitPanel extends ARGON.PORTRAIT.PortraitPanel {
 		constructor(...args) {
 			super(...args);
 		}
@@ -94,7 +94,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 					
 					Blocks[position].unshift([
 						{
-							text: game.i18n.localize(`MYZ.ATTRIBUTE_${key.toUpperCase()}`).toUpperCase().slice(0,3),
+							text: game.i18n.localize(`CORIOLIS.ATTRIBUTE_${key.toUpperCase()}`).toUpperCase().slice(0,3),
 						},
 						{
 							text: attributes[key].value,
@@ -155,7 +155,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 				let description = rot.label;
 				
 				if (permanent) {
-					description = "MYZ.PERMA_ROT";
+					description = "CORIOLIS.PERMA_ROT";
 				}
 				
 				Icons.push({img : "systems/mutant-year-zero/ui/dice-base-1.png", description : description, key : "rot", click : () => {}, border : permanent});
@@ -186,29 +186,18 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 	}
 	
-	class MYZDrawerPanel extends ARGON.DRAWER.DrawerPanel {
+	class CORIOLISDrawerPanel extends ARGON.DRAWER.DrawerPanel {
 		constructor(...args) {
 			super(...args);
 		}
 
 		get categories() {
 			const attributes = {...this.actor.system.attributes};
-			let skills = this.actor.items.filter(item => item.type == "skill");
+			const actorskills = this.actor.system.skills;
+			let skills = {};
+			skills.general = Object.keys(actorskills).filter(skillkey => actorskills[skillkey].category == "general").map(skillkey => {return {key : skillkey, ...actorskills[skillkey]}});
+			skills.advanced = Object.keys(actorskills).filter(skillkey => actorskills[skillkey].category == "advanced").map(skillkey => {return {key : skillkey, ...actorskills[skillkey]}});
 			
-			//sort the skills (why are they not sorted alread?)
-			let skillgroups = {};
-			
-			for (let attribute of Object.keys(attributes)) {
-				skillgroups[attribute] = skills.filter(skill => skill.system.attribute == attribute);
-				
-				skillgroups[attribute] = skillgroups[attribute].sort((a,b) => {
-					if (a.name < b.name) {return -1}
-					if (a.name > b.name) {return 1}
-					return 0
-				});
-			}
-			skills = [];
-			Object.values(skillgroups).forEach(group => skills = skills.concat(group));
 			
 			let maxAttribute = Math.max(...Object.values(attributes).map(content => content.value));
 
@@ -246,52 +235,52 @@ Hooks.on("argonInit", (CoreHUD) => {
 				]);
 			});
 			
-			let skillsButtons = [];
-			
-			if (skills) {
-				skillsButtons = skills.map((skill) => {
-					const skillData = skill.system;
-					
-					let valueLabel = `${skillData.value}<span style="margin: 0 1rem; filter: brightness(0.8)">(+${attributes[skillData.attribute].value})</span>`;
-					
-					
-					if (game.settings.get(ModuleName, "UseDiceCircles")) {
-						valueLabel = "";
+			let skillsButtons = {};
+
+			for (const skilltype of ["general", "advanced"]) {
+				skillsButtons[skilltype] = skills[skilltype].map((skill) => {
+					if (skilltype == "general" || skill.value > 0) {
+						//only show advanced skills with at least one point
+						let valueLabel = `${skill.value}<span style="margin: 0 1rem; filter: brightness(0.8)">(+${attributes[skill.attribute].value})</span>`;
 						
-						valueLabel = valueLabel + `<div style="display:flex">`;
-						
-						for (let i = 0; i < skillData.value; i++) {
-							valueLabel = valueLabel + `<i class="fa-solid fa-circle"></i>`;
+						if (game.settings.get(ModuleName, "UseDiceCircles")) {
+							valueLabel = "";
+							
+							valueLabel = valueLabel + `<div style="display:flex">`;
+							
+							for (let i = 0; i < skill.value; i++) {
+								valueLabel = valueLabel + `<i class="fa-solid fa-circle"></i>`;
+							}
+							
+							valueLabel = valueLabel + "</div>";
+							
+							valueLabel = valueLabel + `<div style="display:flex">`;
+							
+							for (let i = 0; i < maxAttribute; i++) {
+								if (i < attributes[skill.attribute].value) {
+									valueLabel = valueLabel + `<i class="fa-regular fa-circle"></i>`;
+								}
+								else {
+									valueLabel = valueLabel + `<i class="fa-regular fa-circle" style="visibility:hidden"></i>`;
+								}
+							}
+							
+							valueLabel = valueLabel + "</div>";
 						}
 						
-						valueLabel = valueLabel + "</div>";
-						
-						valueLabel = valueLabel + `<div style="display:flex">`;
-						
-						for (let i = 0; i < maxAttribute; i++) {
-							if (i < attributes[skillData.attribute].value) {
-								valueLabel = valueLabel + `<i class="fa-regular fa-circle"></i>`;
-							}
-							else {
-								valueLabel = valueLabel + `<i class="fa-regular fa-circle" style="visibility:hidden"></i>`;
-							}
-						}
-						
-						valueLabel = valueLabel + "</div>";
+						return new ARGON.DRAWER.DrawerButton([
+							{
+								label: game.i18n.localize("CORIOLIS.SKILL_" + skill.key),
+								onClick: () => {openRollDialoge("skill", skill.key, this.actor)}
+							},
+							{
+								label: valueLabel,
+								onClick: () => {openRollDialoge("skill", skill.key, this.actor)},
+								style: "display: flex; justify-content: flex-end;"
+							},
+						]);
 					}
-					
-					return new ARGON.DRAWER.DrawerButton([
-						{
-							label: game.i18n.localize("MYZ.SKILL_" + skillData.skillKey),
-							onClick: () => {openRollDialoge("skill", skillData.skillKey, this.actor)}
-						},
-						{
-							label: valueLabel,
-							onClick: () => {openRollDialoge("skill", skillData.skillKey, this.actor)},
-							style: "display: flex; justify-content: flex-end;"
-						},
-					]);
-				});
+				}).filter(button => button);
 			}
 
 			let returncategories = [];
@@ -302,7 +291,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 						gridCols: "7fr 2fr 2fr",
 						captions: [
 							{
-								label: game.i18n.localize("MYZ.ATTRIBUTES"),
+								label: game.i18n.localize("CORIOLIS.ATTRIBUTES"),
 							},
 							{
 								label: "", //looks nicer
@@ -319,10 +308,10 @@ Hooks.on("argonInit", (CoreHUD) => {
 						gridCols: "7fr 2fr",
 						captions: [
 							{
-								label: game.i18n.localize("MYZ.ATTRIBUTES"),
+								label: game.i18n.localize("CORIOLIS.ATTRIBUTES"),
 							},
 							{
-								label: game.i18n.localize("MYZ.ROLL"),
+								label: game.i18n.localize("CORIOLIS.ROLL"),
 							},
 						],
 						buttons: attributesButtons
@@ -330,30 +319,32 @@ Hooks.on("argonInit", (CoreHUD) => {
 				}
 			}
 			
-			if (skillsButtons.length) {
-				returncategories.push({
-					gridCols: "7fr 2fr",
-					captions: [
-						{
-							label: game.i18n.localize("MYZ.SKILLS"),
-						},
-						{
-							label: "",
-						}
-					],
-					buttons: skillsButtons,
-				});
+			for (let skilltype of ["general", "advanced"]) {
+				if (skillsButtons[skilltype].length) {
+					returncategories.push({
+						gridCols: "7fr 2fr",
+						captions: [
+							{
+								label: game.i18n.localize("CORIOLIS.SKILLS"),
+							},
+							{
+								label: "",
+							}
+						],
+						buttons: skillsButtons[skilltype],
+					});
+				}
 			}
 			
 			return returncategories;
 		}
 
 		get title() {
-			return `${game.i18n.localize("MYZ.ATTRIBUTES")} & ${game.i18n.localize("MYZ.SKILLS")}`;
+			return `${game.i18n.localize("CORIOLIS.ATTRIBUTES")} & ${game.i18n.localize("CORIOLIS.SKILLS")}`;
 		}
 	}
   
-    class MYZActionActionPanel extends ARGON.MAIN.ActionPanel {
+    class CORIOLISActionActionPanel extends ARGON.MAIN.ActionPanel {
 		constructor(...args) {
 			super(...args);
 		}
@@ -376,19 +367,19 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async _getButtons() {
-			const specialActions = Object.values(MYZECHActionItems);
+			const specialActions = Object.values(CORIOLISECHActionItems);
 
 			let buttons = [];
 			
-			buttons.push(new MYZItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
-			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new MYZSpecialActionButton(specialActions[0]), new MYZSpecialActionButton(specialActions[1])));
-			buttons.push(new MYZButtonPanelButton({type: "ability", color: 0}));
+			buttons.push(new CORIOLISItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])));
+			buttons.push(new CORIOLISButtonPanelButton({type: "ability", color: 0}));
 			
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
     }
 	
-    class MYZManeuverActionPanel extends ARGON.MAIN.ActionPanel {
+    class CORIOLISManeuverActionPanel extends ARGON.MAIN.ActionPanel {
 		constructor(...args) {
 			super(...args);
 		}
@@ -411,22 +402,22 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async _getButtons() {
-			const specialActions = Object.values(MYZECHManeuverItems);
+			const specialActions = Object.values(CORIOLISECHManeuverItems);
 
 			const buttons = [
-				new ARGON.MAIN.BUTTONS.SplitButton(new MYZSpecialActionButton(specialActions[0]), new MYZSpecialActionButton(specialActions[1])),
-				new MYZButtonPanelButton({type: "gear", color: 1})
+				new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])),
+				new CORIOLISButtonPanelButton({type: "gear", color: 1})
 			];
 			if (game.settings.get(ModuleName, "ShowTalents")) {
-				buttons.push(new MYZButtonPanelButton({type: "talent", color: 1}));
+				buttons.push(new CORIOLISButtonPanelButton({type: "talent", color: 1}));
 			}
-			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new MYZSpecialActionButton(specialActions[2]), new MYZSpecialActionButton(specialActions[3])));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[2]), new CORIOLISSpecialActionButton(specialActions[3])));
 			
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
     }
 	
-    class MYZReactionActionPanel extends ARGON.MAIN.ActionPanel {
+    class CORIOLISReactionActionPanel extends ARGON.MAIN.ActionPanel {
 		constructor(...args) {
 			super(...args);
 		}
@@ -436,16 +427,16 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async _getButtons() {
-			const specialActions = Object.values(MYZECHReactionItems);
+			const specialActions = Object.values(CORIOLISECHReactionItems);
 
 			const buttons = [
-				new MYZSpecialActionButton(specialActions[0])
+				new CORIOLISSpecialActionButton(specialActions[0])
 			];
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
     }
 	
-	class MYZItemButton extends ARGON.MAIN.BUTTONS.ItemButton {
+	class CORIOLISItemButton extends ARGON.MAIN.BUTTONS.ItemButton {
 		constructor(...args) {
 			super(...args);
 			
@@ -543,7 +534,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 			}
 			
 			if (used) {
-				MYZItemButton.consumeActionEconomy(this.item);
+				CORIOLISItemButton.consumeActionEconomy(this.item);
 			}
 		}
 
@@ -576,7 +567,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 	}
   
-    class MYZButtonPanelButton extends ARGON.MAIN.BUTTONS.ButtonPanelButton {
+    class CORIOLISButtonPanelButton extends ARGON.MAIN.BUTTONS.ButtonPanelButton {
 		constructor({type, subtype, color}) {
 			super();
 			this.type = type;
@@ -605,7 +596,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 
 		get label() {
 			if (this.type == "ability") {
-				return "MYZ.ABILITY";
+				return "CORIOLIS.ABILITY";
 			}
 			
 			return "TYPES.Item." + this.type;
@@ -638,11 +629,11 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async _getPanel() {
-			return new ARGON.MAIN.BUTTON_PANELS.ButtonPanel({buttons: this.actor.items.filter(item => item.type == this.type).map(item => new MYZItemButton({item}))});
+			return new ARGON.MAIN.BUTTON_PANELS.ButtonPanel({buttons: this.actor.items.filter(item => item.type == this.type).map(item => new CORIOLISItemButton({item}))});
 		}
     }
 	
-	class MYZSpecialActionButton extends ARGON.MAIN.BUTTONS.ActionButton {
+	class CORIOLISSpecialActionButton extends ARGON.MAIN.BUTTONS.ActionButton {
         constructor(specialItem) {
 			super();
 			this.item = new CONFIG.Item.documentClass(specialItem, {
@@ -698,7 +689,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 			}
 			
 			if (used) {
-				MYZSpecialActionButton.consumeActionEconomy(this.item);
+				CORIOLISSpecialActionButton.consumeActionEconomy(this.item);
 			}
 		}
 
@@ -707,12 +698,23 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
     }
 	
-	class MYZWeaponSets extends ARGON.WeaponSets {
+	class CORIOLISMovementHud extends ARGON.MovementHud {
+
+		constructor (...args) {
+			super(...args);
+		}
+
+		get movementMax() {
+			return this.actor.system.movementRate / canvas.scene.dimensions.distance;
+		}
+	}
+	
+	class CORIOLISWeaponSets extends ARGON.WeaponSets {
 		constructor(...args) {
 			super(...args);
 			
 			this.lastdragID = "";
-			
+			/*
 			Hooks.on("renderActorSheet", (sheet, html, infos) => {
 				if (sheet.actor == this.actor) {
 					const weaponelements = html.find(`li .roll-weapon`);
@@ -734,6 +736,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 					})
 				}
 			});
+			*/
 		}
 		
 		async getDefaultSets() {
@@ -781,33 +784,26 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async _onDrop(event) {
-			let itemID;
-			
-			if (this.lastdragID) {
-				itemID = this.lastdragID;
-			}
-			else {
-				try {      
-					event.preventDefault();
-					event.stopPropagation();
-					const data = JSON.parse(event.dataTransfer.getData("text/plain"));
-					if(data?.type !== "weapon") return;
-					itemID = data.itemId;
-				} catch (error) {
-					
-				}
-			}
-			
-			if (itemID) {
+			try {      
+				event.preventDefault();
+				event.stopPropagation();
+				const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+				const item = await fromUuid(data.uuid);
+				if(item?.type !== "weapon") return;
 				const set = event.currentTarget.dataset.set;
 				const slot = event.currentTarget.dataset.slot;
 				const sets = this.actor.getFlag("enhancedcombathud", "weaponSets") || {};
 				sets[set] = sets[set] || {};
-				sets[set][slot] = itemID;
-
+				sets[set][slot] = item.id;
 				await this.actor.setFlag("enhancedcombathud", "weaponSets", sets);
 				await this.render();
+			} catch (error) {
+				
 			}
+		}
+		
+		get template() {
+			return `modules/${ModuleName}/templates/coriolisWeaponSets.hbs`;
 		}
 		
 		async getactiveSet() {
@@ -817,22 +813,23 @@ Hooks.on("argonInit", (CoreHUD) => {
     }
   
     /*
-    class MYZEquipmentButton extends ARGON.MAIN.BUTTONS.EquipmentButton {
+    class CORIOLISEquipmentButton extends ARGON.MAIN.BUTTONS.EquipmentButton {
 		constructor(...args) {
 			super(...args);
 		}
     }
 	*/
   
-    CoreHUD.definePortraitPanel(MYZPortraitPanel);
-    CoreHUD.defineDrawerPanel(MYZDrawerPanel);
+    CoreHUD.definePortraitPanel(CORIOLISPortraitPanel);
+    CoreHUD.defineDrawerPanel(CORIOLISDrawerPanel);
     CoreHUD.defineMainPanels([
-		MYZActionActionPanel,
-		MYZManeuverActionPanel,
-		MYZReactionActionPanel,
+		CORIOLISActionActionPanel,
+		CORIOLISManeuverActionPanel,
+		CORIOLISReactionActionPanel,
 		ARGON.PREFAB.PassTurnPanel
     ]);  
 	CoreHUD.defineMovementHud(null);
-    CoreHUD.defineWeaponSets(MYZWeaponSets);
+	CoreHUD.defineMovementHud(CORIOLISMovementHud);
+    CoreHUD.defineWeaponSets(CORIOLISWeaponSets);
 	CoreHUD.defineSupportedActorTypes(["character", "npc", "ship"]);
 });

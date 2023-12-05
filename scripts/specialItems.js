@@ -2,14 +2,14 @@ import {ModuleName} from "./utils.js";
 
 const ItemReplacementID = "_argonUI_";
 
-var MYZECHActionItems = {};
+var CORIOLISECHActionItems = {};
 
-var MYZECHManeuverItems = {};
+var CORIOLISECHManeuverItems = {};
 
-var MYZECHReactionItems = {};
+var CORIOLISECHReactionItems = {};
 
-function registerMYZECHSItems () {
-	MYZECHActionItems = {
+function registerCORIOLISECHSItems () {
+	CORIOLISECHActionItems = {
 		groupflags : {
 			actiontype : "action"
 		},
@@ -31,7 +31,7 @@ function registerMYZECHSItems () {
 		}
 	}
 	
-	MYZECHManeuverItems = {
+	CORIOLISECHManeuverItems = {
 		groupflags : {
 			actiontype : "maneuver"
 		},
@@ -69,7 +69,7 @@ function registerMYZECHSItems () {
 		}
 	}
 	
-	MYZECHReactionItems = {
+	CORIOLISECHReactionItems = {
 		groupflags : {
 			actiontype : "react"
 		},
@@ -86,7 +86,7 @@ function registerMYZECHSItems () {
 	}
 	
 	//some preparation
-	for (let itemset of [MYZECHActionItems, MYZECHManeuverItems, MYZECHReactionItems]) {
+	for (let itemset of [CORIOLISECHActionItems, CORIOLISECHManeuverItems, CORIOLISECHReactionItems]) {
 		for (let itemkey of Object.keys(itemset)) {
 			if (itemkey != "groupflags") {
 				itemset[itemkey].flags = {};
@@ -104,4 +104,4 @@ function registerMYZECHSItems () {
 	}
 }
 
-export {registerMYZECHSItems, MYZECHActionItems, MYZECHManeuverItems, MYZECHReactionItems}
+export {registerCORIOLISECHSItems, CORIOLISECHActionItems, CORIOLISECHManeuverItems, CORIOLISECHReactionItems}

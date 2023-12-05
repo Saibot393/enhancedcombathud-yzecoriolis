@@ -28,7 +28,7 @@
     }
   ],
   "styles": [
-    "styles/MYZCustom.css"
+    "styles/coriolisCustom.css"
   ],
   "esmodules": [
 	"scripts/settings.js",
