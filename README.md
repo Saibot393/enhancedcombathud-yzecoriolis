@@ -1,4 +1,4 @@
-# Argon-Mutant Year Zero
+# Argon-Coriolis
 An implementation of the [Argon - Combat HUD](https://foundryvtt.com/packages/enhancedcombathud) (by [TheRipper93](https://theripper93.com/) and [Mouse0270](https://github.com/mouse0270)) for the [Coriolis]([https://foundryvtt.com/packages/mutant-year-zero](https://foundryvtt.com/packages/yzecoriolis)) system. The Argon Combat HUD (CORE) module is required for this module to work.
 
 ![image](https://github.com/Saibot393/enhancedcombathud-yzecoriolis/assets/137942782/ac620881-aee4-4ee4-8db6-bea9465cd68f)
