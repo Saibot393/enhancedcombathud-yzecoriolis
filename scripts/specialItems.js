@@ -4,61 +4,46 @@ const ItemReplacementID = "_argonUI_";
 
 var CORIOLISECHActionItems = {};
 
-var CORIOLISECHManeuverItems = {};
-
-var CORIOLISECHReactionItems = {};
-
 function registerCORIOLISECHSItems () {
-	CORIOLISECHActionItems = {
+	let AP3Items = {
 		groupflags : {
-			actiontype : "action"
+			APconsumption : 3
 		},
-		Help : {
-			img: "modules/enhancedcombathud-mutant-year-zero/icons/thumb-up.svg",
-			name: game.i18n.localize(ModuleName+".Titles.Help"),
+		FirstAid : {
+			img: "icons/svg/heal.svg",
+			name: game.i18n.localize(ModuleName+".Titles.FirstAid"),
 			type : "base",
 			system : {
-				description : game.i18n.localize(ModuleName+".Descriptions.Help")
+				description : game.i18n.localize(ModuleName+".Descriptions.FirstAid")
 			}
 		},
-		Hinder : {
-			img: "modules/enhancedcombathud-mutant-year-zero/icons/thumb-down.svg",
-			name: game.i18n.localize(ModuleName+".Titles.Hinder"),
+		Tinkering : {
+			img: "modules/enhancedcombathud-yzecoriolis/icons/tinker.svg",
+			name: game.i18n.localize(ModuleName+".Titles.Tinkering"),
 			type : "base",
 			system : {
-				description : game.i18n.localize(ModuleName+".Descriptions.Hinder")
+				description : game.i18n.localize(ModuleName+".Descriptions.Tinkering")
 			}
 		}
-		
-		/*
-			firstAid:
-			Tinkering:
-			
-			Reload
-			
-			TakeCover
-			Duck
-			StandUp
-			DrawWeapon
-			Parry
-			Opportunity
-			Overwatch
-			
-			Defend
-		*/
 	}
 	
-	CORIOLISECHManeuverItems = {
+	let AP2Items = {
 		groupflags : {
-			actiontype : "maneuver"
+			APconsumption : 2
 		},
-		Move : {
-			img: "modules/enhancedcombathud/icons/svg/journey.svg",
-			name: game.i18n.localize(ModuleName+".Titles.Move"),
+		Reload : {
+			img: "modules/enhancedcombathud-yzecoriolis/icons/reload-gun-barrel.svg",
+			name: game.i18n.localize(ModuleName+".Titles.Reload"),
 			type : "base",
 			system : {
-				description : game.i18n.localize(ModuleName+".Descriptions.Move")
+				description : game.i18n.localize(ModuleName+".Descriptions.Reload")
 			}
+		}
+	}
+	
+	let AP1Items = {
+		groupflags : {
+			APconsumption : 1
 		},
 		TakeCover : {
 			img: "modules/enhancedcombathud/icons/svg/armor-upgrade.svg",
@@ -68,42 +53,58 @@ function registerCORIOLISECHSItems () {
 				description : game.i18n.localize(ModuleName+".Descriptions.TakeCover")
 			}
 		},
+		Duck : {
+			img: "icons/svg/down.svg",
+			name: game.i18n.localize(ModuleName+".Titles.Duck"),
+			type : "base",
+			system : {
+				description : game.i18n.localize(ModuleName+".Descriptions.Duck")
+			}
+		},
+		StandUp : {
+			img: "icons/svg/up.svg",
+			name: game.i18n.localize(ModuleName+".Titles.StandUp"),
+			type : "base",
+			system : {
+				description : game.i18n.localize(ModuleName+".Descriptions.StandUp")
+			}
+		},
 		DrawWeapon : {
-			img: "modules/enhancedcombathud-mutant-year-zero/icons/pistol-gun.svg",
+			img: "modules/enhancedcombathud-yzecoriolis/icons/bolter-gun.svg",
 			name: game.i18n.localize(ModuleName+".Titles.DrawWeapon"),
 			type : "base",
 			system : {
 				description : game.i18n.localize(ModuleName+".Descriptions.DrawWeapon")
 			}
 		},
-		Reload : {
-			img: "modules/enhancedcombathud-mutant-year-zero/icons/reload-gun-barrel.svg",
-			name: game.i18n.localize(ModuleName+".Titles.Reload"),
+		Parry : {
+			img: "modules/enhancedcombathud/icons/svg/crossed-swords.svg",
+			name: game.i18n.localize(ModuleName+".Titles.Parry"),
 			type : "base",
 			system : {
-				description : game.i18n.localize(ModuleName+".Descriptions.Reload")
+				description : game.i18n.localize(ModuleName+".Descriptions.Parry")
 			}
-		}
-	}
-	
-	CORIOLISECHReactionItems = {
-		groupflags : {
-			actiontype : "react"
 		},
-		Defend : {
-			img: "icons/svg/shield.svg",
-			name: game.i18n.localize(ModuleName+".Titles.Defend"),
+		Opportunity : {
+			img: "modules/enhancedcombathud-yzecoriolis/icons/wide-arrow-dunk.svg",
+			name: game.i18n.localize(ModuleName+".Titles.Opportunity"),
 			type : "base",
 			system : {
-				description : game.i18n.localize(ModuleName+".Descriptions.Defend"),
-				skill : "FIGHT",
-				skillRobot : "FORCE"
+				description : game.i18n.localize(ModuleName+".Descriptions.Opportunity")
+			}
+		},
+		Overwatch : {
+			img: "icons/svg/clockwork.svg",
+			name: game.i18n.localize(ModuleName+".Titles.Overwatch"),
+			type : "base",
+			system : {
+				description : game.i18n.localize(ModuleName+".Descriptions.Overwatch")
 			}
 		}
 	}
-	
+
 	//some preparation
-	for (let itemset of [CORIOLISECHActionItems, CORIOLISECHManeuverItems, CORIOLISECHReactionItems]) {
+	for (let itemset of [AP3Items, AP2Items, AP1Items]) {
 		for (let itemkey of Object.keys(itemset)) {
 			if (itemkey != "groupflags") {
 				itemset[itemkey].flags = {};
@@ -119,6 +120,8 @@ function registerCORIOLISECHSItems () {
 		
 		delete itemset.groupflags;
 	}
+	
+	CORIOLISECHActionItems = {...AP3Items, ...AP2Items, ...AP1Items}
 }
 
-export {registerCORIOLISECHSItems, CORIOLISECHActionItems, CORIOLISECHManeuverItems, CORIOLISECHReactionItems}
+export {registerCORIOLISECHSItems, CORIOLISECHActionItems}

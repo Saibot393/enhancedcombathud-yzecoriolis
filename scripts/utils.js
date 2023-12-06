@@ -98,7 +98,7 @@ async function getTooltipDetails(item, actortype) {
 	return { title, description, subtitle, details, properties , propertiesLabel, footerText: comment };
 }
 
-function openRollDialoge(rollType, rollID, rollActor, rollitem = undefined) {
+function openRollDialoge(rollType, rollID, rollActor, options = {}) {
 	let attributeKey;
 	let attribute;
 	let skillKey;
@@ -124,6 +124,20 @@ function openRollDialoge(rollType, rollID, rollActor, rollitem = undefined) {
 		case "weapon":
 		case "explosive":
 			item = rollActor.items.get(rollID);
+			
+			if (item) {
+				if (item.system.melee && !(rollType == "explosive")) {
+					skillKey = "meleecombat";
+					attributeKey = "strength";
+				}
+				else {
+					skillKey = "rangedcombat";
+					attributeKey = "agility";				
+				}
+				
+				skill = rollActor.system.skills[skillKey];
+				attribute = rollActor.system.attributes[attributeKey];
+			}
 			break;
 	}
 	
@@ -163,4 +177,10 @@ function openRollDialoge(rollType, rollID, rollActor, rollitem = undefined) {
     }, false);
 }
 
-export { ModuleName, getTooltipDetails, openRollDialoge }
+function openItemRollDialoge(item, rollActor, options = {}) {
+	if (rollActor.items.get(item.id)) {
+		openRollDialoge(item.type, item.id, rollActor, options);
+	}
+}
+
+export { ModuleName, getTooltipDetails, openRollDialoge, openItemRollDialoge }

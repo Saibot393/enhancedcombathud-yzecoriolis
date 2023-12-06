@@ -9,6 +9,8 @@ The following icons are included
 	- alien-stare.svg
 	- psychic-waves.svg
 	- wide-arrow-dunk.svg
+	- tinker.svg
+	- bolter-gun.svg
 - By [Delapouite](https://delapouite.com/)
 	- thumb-up.svg
 	- thumb-down.svg

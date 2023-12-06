@@ -1,5 +1,5 @@
-import {registerCORIOLISECHSItems, CORIOLISECHActionItems, CORIOLISECHManeuverItems, CORIOLISECHReactionItems} from "./specialItems.js";
-import {ModuleName, getTooltipDetails, openRollDialoge} from "./utils.js";
+import {registerCORIOLISECHSItems, CORIOLISECHActionItems} from "./specialItems.js";
+import {ModuleName, getTooltipDetails, openRollDialoge, openItemRollDialoge} from "./utils.js";
 import {openNewInput} from "./popupInput.js";
 
 Hooks.on("argonInit", (CoreHUD) => {
@@ -8,8 +8,10 @@ Hooks.on("argonInit", (CoreHUD) => {
 	registerCORIOLISECHSItems();
   
 	function consumeAction(amount) {
-		if (ui.ARGON.components.main[0].actionsLeft >= amount) {
-			ui.ARGON.components.main[0].actionsLeft = ui.ARGON.components.main[0].actionsLeft - amount;
+		console.log(amount);
+		console.log(ui.ARGON.components.main[0].actionsLeft);
+		if (ui.ARGON.components.main[0].currentActions >= amount) {
+			ui.ARGON.components.main[0].currentActions = ui.ARGON.components.main[0].currentActions - amount;
 			return true;
 		}
 		
@@ -315,6 +317,11 @@ Hooks.on("argonInit", (CoreHUD) => {
 			return this.actionsLeft;
 		}
 		
+		set currentActions(value) {
+			this.actionsLeft = value;
+			this.updateActionUse();
+		}
+		
 		_onNewRound(combat) {
 			this.actionsLeft = this.maxActions;
 			this.updateActionUse();
@@ -327,27 +334,12 @@ Hooks.on("argonInit", (CoreHUD) => {
 			
 			buttons.push(new CORIOLISItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[2]), new CORIOLISSpecialActionButton(specialActions[3])));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[4]), new CORIOLISSpecialActionButton(specialActions[5])));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[6]), new CORIOLISSpecialActionButton(specialActions[7])));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[8]), new CORIOLISSpecialActionButton(specialActions[9])));
 			buttons.push(new CORIOLISButtonPanelButton({type: "ability", color: 0}));
 			
-			return buttons.filter(button => button.items == undefined || button.items.length);
-		}
-    }
-	
-    class CORIOLISReactionActionPanel extends ARGON.MAIN.ActionPanel {
-		constructor(...args) {
-			super(...args);
-		}
-
-		get label() {
-			return ModuleName+".Titles.ReAction";
-		}
-		
-		async _getButtons() {
-			const specialActions = Object.values(CORIOLISECHReactionItems);
-
-			const buttons = [
-				new CORIOLISSpecialActionButton(specialActions[0])
-			];
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
     }
@@ -569,20 +561,8 @@ Hooks.on("argonInit", (CoreHUD) => {
 			return true;
 		}
 		
-
 		get colorScheme() {
-			switch (this.item?.flags[ModuleName]?.actiontype) {
-				case "action":
-					return 0;
-					break;
-				case "maneuver":
-					return 1;
-					break;
-				case "react":
-					return 3;
-					break;
-			}
-			return 0;
+			return 3 - this.item.flags[ModuleName].APconsumption;
 		}
 
 		async getTooltipData() {
@@ -610,7 +590,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 
 		static consumeActionEconomy(item) {
-			consumeAction(item.flags[ModuleName].actiontype);
+			consumeAction(item.flags[ModuleName].APconsumption);
 		}
     }
 	
@@ -740,7 +720,6 @@ Hooks.on("argonInit", (CoreHUD) => {
     CoreHUD.defineDrawerPanel(CORIOLISDrawerPanel);
     CoreHUD.defineMainPanels([
 		CORIOLISActionActionPanel,
-		CORIOLISReactionActionPanel,
 		ARGON.PREFAB.PassTurnPanel
     ]);  
 	CoreHUD.defineMovementHud(null);
