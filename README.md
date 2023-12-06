@@ -11,7 +11,7 @@ This module adjusts various Argon features for the Coriolis system:
     - Radiation will be displayed at the right side
 - **Action tracking** the 3AP are tracked for various standard actions
 - **Skills and Attributes** advanced skills are only shown if the character has atleast one point in them
-- **Tooltips** will display tech tier, bonus, quantity, initiative, damage, crit, range, power, radius and automatic where appropiate
+- **Tooltips** will display tech tier, bonus, quantity, initiative, damage, crit, range, power, radius and automatic where applicable
 - **Movement** will automatically consume AP
 
 Due to licensing i am not able to include official text from the book for the description of the standard actions (help, move, take cover...). The default description of these actions therefore only points to page in the rule book which describes them. Should you wish to customize the description of these actions, you can crate an item (i recommend using a talent) with the name `_argonUI_#ActionID` where `#ActionID` is replaced by the actions id:
