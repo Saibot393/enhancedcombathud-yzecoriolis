@@ -352,11 +352,11 @@ Hooks.on("argonInit", (CoreHUD) => {
 			buttons.push(new CORIOLISItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])));
 			buttons.push(...talentbuttons);
+			buttons.push(new CORIOLISButtonPanelButton({type: "gear", color: 0}));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[2]), new CORIOLISSpecialActionButton(specialActions[3])));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[4]), new CORIOLISSpecialActionButton(specialActions[5])));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[6]), new CORIOLISSpecialActionButton(specialActions[7])));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[8]), new CORIOLISSpecialActionButton(specialActions[9])));
-			buttons.push(new CORIOLISButtonPanelButton({type: "ability", color: 0}));
 			
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
@@ -388,6 +388,13 @@ Hooks.on("argonInit", (CoreHUD) => {
 		async getTooltipData() {
 			const tooltipData = await getTooltipDetails(this.item, this.actor.system.creatureType);
 			return tooltipData;
+		}
+		
+		async _onTooltipMouseEnter(event) {
+			const tooltipData = await this.getTooltipData();
+			if (!tooltipData) return;
+			this._tooltip = new CORIOLISTooltip(tooltipData, this.element, this.tooltipOrientation);
+			this._tooltip.render();
 		}
 
 		get quantity() {
@@ -577,7 +584,14 @@ Hooks.on("argonInit", (CoreHUD) => {
 			const tooltipData = await getTooltipDetails(this.item, this.actor.system.creatureType);
 			return tooltipData;
 		}
-
+		
+		async _onTooltipMouseEnter(event) {
+			const tooltipData = await this.getTooltipData();
+			if (!tooltipData) return;
+			this._tooltip = new CORIOLISTooltip(tooltipData, this.element, this.tooltipOrientation);
+			this._tooltip.render();
+		}
+		
 		async _onLeftClick(event) {
 			var used = true;
 			
@@ -606,11 +620,31 @@ Hooks.on("argonInit", (CoreHUD) => {
 
 		constructor (...args) {
 			super(...args);
+			
+			this.prevUsedMovement = 0;
 		}
 
 		get movementMax() {
 			return this.actor.system.movementRate / canvas.scene.dimensions.distance;
 		}
+		
+		get movementUsed() {
+			return this._movementUsed;
+		}
+		
+		set movementUsed(value) {
+			super._movementUsed = value;
+			
+			consumeAction(Math.ceil(value/this.movementMax) - Math.ceil(this.prevUsedMovement/this.movementMax));
+			
+			this.prevUsedMovement = value;
+		}
+		
+	    _onNewRound(combat) {
+			super._onNewRound(combat);
+			
+			this.prevUsedMovement = 0;
+	    }
 	}
 	
 	class CORIOLISWeaponSets extends ARGON.WeaponSets {
@@ -715,6 +749,12 @@ Hooks.on("argonInit", (CoreHUD) => {
 			return sets[this.actor.getFlag("enhancedcombathud", "activeWeaponSet")];
 		}
     }
+	
+	class CORIOLISTooltip extends ARGON.CORE.Tooltip {
+		get template() {
+			return `modules/${ModuleName}/templates/coriolisTooltip.hbs`; //to add color to subtitles
+		}
+	}
   
     /*
     class CORIOLISEquipmentButton extends ARGON.MAIN.BUTTONS.EquipmentButton {

@@ -1,8 +1,9 @@
 const ModuleName = "enhancedcombathud-yzecoriolis";
+const SystemName = "YZECORIOLIS";
 import { coriolisModifierDialog, coriolisRoll } from "/systems/yzecoriolis/module/coriolis-roll.js";
 
 async function getTooltipDetails(item, actortype) {
-	let title, description, itemType, creatureType, skillmodifiers, attributemodifiers, validskills, category, subtitle, range, damage, bonus, quantity, comment, requirement;
+	let title, description, itemType, creatureType, skillmodifiers, attributemodifiers, validskills, techTier, category, subtitle, subtitlecolor, range, damage, bonus, quantity, comment, requirement;
 	let propertiesLabel = "MYZ.REQUIREMENT";
 	let properties = [];
 	let materialComponents = "";
@@ -18,6 +19,7 @@ async function getTooltipDetails(item, actortype) {
 	skillmodifiers = [];
 	attributemodifiers = [];
 	validskills = item.system.skillKeysList;
+	techTier = item.system.techTier;
 	if (item.system.modifiers) {
 		attributemodifiers = attributemodifiers.concat(Object.keys(item.system.modifiers).filter(key => item.system.modifiers[key] != 0 && !validskills.includes(key)));
 		skillmodifiers = skillmodifiers.concat(Object.keys(item.system.modifiers).filter(key => item.system.modifiers[key] != 0 && validskills.includes(key)));
@@ -40,9 +42,64 @@ async function getTooltipDetails(item, actortype) {
 	
 	properties = [];
 
-	subtitle = skillmodifiers.map(key => game.i18n.localize(`MYZ.SKILL_${key}`));
-	subtitle = subtitle.concat(attributemodifiers.map(key => game.i18n.localize(`MYZ.ATTRIBUTE_${key.toUpperCase()}_${creatureType.toUpperCase()}`)));
-	subtitle = subtitle.join("/");
+	switch (itemType) {
+		case "gear":
+		case "weapon":
+		case "explosive":
+			switch (techTier) {
+				default:
+				case "P":
+					subtitle = game.i18n.localize(`${SystemName}.TechTierPrimitive`);
+					subtitlecolor = "#523d06";
+					break;
+				case "O":
+					subtitle = game.i18n.localize(`${SystemName}.TechTierOrdinary`);
+					break;
+				case "A":
+					subtitle = game.i18n.localize(`${SystemName}.TechTierAdvanced`);
+					subtitlecolor = "#118209";
+					break;
+				case "F":
+					subtitle = game.i18n.localize(`${SystemName}.TechTierFaction`);
+					subtitlecolor = "#970ea1";
+					break;
+				case "R":
+					subtitle = game.i18n.localize(`${SystemName}.TechTierPortalBuilderRelic`);
+					subtitlecolor = "#ebb010"
+					break;
+			}
+			break;
+		case "talent":
+			let categoryName;
+			switch (category) {
+					case "group" :
+						categoryName = "Group";
+						break;
+					case "icon" :
+						categoryName = "Icon";
+						break;
+					case "general" :
+						categoryName = "General";
+						break;
+					case "humanite" :
+						categoryName = "Humanite";
+						break;
+					case "cybernetic" :
+						categoryName = "Cybernetic";
+						break;
+					case "bionicsculpt" :
+						categoryName = "BionicSculpt";
+						break;
+					case "mysticalpowers" :
+						categoryName = "MysticalPowers";
+						break;
+			}
+			subtitle = game.i18n.localize(`${SystemName}.TalentCat` + categoryName);
+			break;
+	}
+	
+	console.log(subtitlecolor);
+	
 
 	switch (itemType) {
 		case "weapon":
@@ -62,7 +119,6 @@ async function getTooltipDetails(item, actortype) {
 					skill = "SHOOT";
 					break;
 			}
-			subtitle = game.i18n.localize(`MYZ.SKILL_${skill}`);
 			
 			details.push({
 				label: "MYZ.DAMAGE",
@@ -95,7 +151,7 @@ async function getTooltipDetails(item, actortype) {
 		properties.push({ label: requirement });
 	}
 
-	return { title, description, subtitle, details, properties , propertiesLabel, footerText: comment };
+	return { title, description, subtitle, subtitlecolor, details, properties , propertiesLabel, footerText: comment };
 }
 
 function openRollDialoge(rollType, rollID, rollActor, options = {}) {
