@@ -2,14 +2,14 @@ import {registerCORIOLISECHSItems, CORIOLISECHActionItems} from "./specialItems.
 import {ModuleName, getTooltipDetails, openRollDialoge, openItemRollDialoge} from "./utils.js";
 import {openNewInput} from "./popupInput.js";
 
+const talenttypes = ["group", "icon", "general", "humanite", "cybernetic", "bionicsculpt", "mysticalpowers"];
+
 Hooks.on("argonInit", (CoreHUD) => {
     const ARGON = CoreHUD.ARGON;
   
 	registerCORIOLISECHSItems();
   
 	function consumeAction(amount) {
-		console.log(amount);
-		console.log(ui.ARGON.components.main[0].actionsLeft);
 		if (ui.ARGON.components.main[0].currentActions >= amount) {
 			ui.ARGON.components.main[0].currentActions = ui.ARGON.components.main[0].currentActions - amount;
 			return true;
@@ -332,8 +332,26 @@ Hooks.on("argonInit", (CoreHUD) => {
 
 			let buttons = [];
 			
+			let talentbuttons = [];
+			let generalBlacklist = [];
+			const talentsThreshold = game.settings.get(ModuleName, "TalentsThreshold");
+			
+			let talents = this.actor.items.filter(item => item.type == "talent");
+			
+			for (const subtype of talenttypes.filter(type => type != "general")) {
+				if (talents.filter(item => item.system.category == subtype).length >= talentsThreshold) {
+					talentbuttons.push(new CORIOLISButtonPanelButton({type: "talent", subtype: subtype, color: 0}));
+					generalBlacklist.push(subtype);
+				}
+			}
+			
+			if (talents.find(item => !generalBlacklist.includes(item.system.category))) {
+				talentbuttons.unshift(new CORIOLISButtonPanelButton({type: "talent", subtype: "general", color: 0, typeblacklist : generalBlacklist}));
+			}
+			
 			buttons.push(new CORIOLISItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])));
+			buttons.push(...talentbuttons);
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[2]), new CORIOLISSpecialActionButton(specialActions[3])));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[4]), new CORIOLISSpecialActionButton(specialActions[5])));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[6]), new CORIOLISSpecialActionButton(specialActions[7])));
@@ -373,14 +391,6 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 
 		get quantity() {
-			if (game.settings.get(ModuleName, "ConsumeBullets")) {
-				if (this.item?.type == "weapon") {
-					if (this.item.system.category == "ranged") {
-						return this.actor.system.resources.bullets.value;
-					}
-				}
-			}
-			
 			return null;
 		}
 		
@@ -388,18 +398,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 			var used = false;
 			
 			if (this.item.type == "weapon") {
-				if (game.settings.get(ModuleName, "ConsumeBullets") && this.quantity) {
-					const newvalue = this.actor.system.resources.bullets.value - 1;
-					
-					if (newvalue >= 0) {
-						this.actor.update({system : {resources : {bullets : {value : newvalue}}}});
-						
-						used = true;
-					}
-				}
-				else {
-					used = true;
-				}
+				used = true;
 				
 				if (used) {
 					openItemRollDialoge(this.item, this.actor);
@@ -476,18 +475,12 @@ Hooks.on("argonInit", (CoreHUD) => {
 	}
   
     class CORIOLISButtonPanelButton extends ARGON.MAIN.BUTTONS.ButtonPanelButton {
-		constructor({type, subtype, color}) {
+		constructor({type, subtype, color, typeblacklist = []}) {
 			super();
 			this.type = type;
 			this.color = color;
-			
-			Hooks.on("updateActor", (actor, changes, infos, sender) => {
-				if (this.quantity != null) {
-					if (this.actor == actor) {
-						this.render();
-					}
-				}
-			});
+			this.subtype = subtype;
+			this.typeblacklist = typeblacklist;
 		}
 
 		get colorScheme() {
@@ -513,14 +506,16 @@ Hooks.on("argonInit", (CoreHUD) => {
 		get icon() {
 			switch (this.type) {
 				case "gear": return "modules/enhancedcombathud/icons/svg/backpack.svg";
-				case "magic": return "modules/enhancedcombathud/icons/svg/spell-book.svg";
-				case "talent": return "icons/svg/book.svg";
-				case "ability":
-					switch(this.actor.system.creatureType) {
-						case "human": return "modules/enhancedcombathud-mutant-year-zero/icons/talk.svg";
-						case "mutant": return "modules/enhancedcombathud-mutant-year-zero/icons/dna1.svg";
-						case "animal": return "modules/enhancedcombathud-mutant-year-zero/icons/paw.svg";
-						case "robot": return "modules/enhancedcombathud-mutant-year-zero/icons/microchip.svg";
+				case "talent": 
+					switch(this.subtype) {
+						case "group" : return "modules/enhancedcombathud-yzecoriolis/icons/team-upgrade.svg";
+						case "icon" : return "modules/enhancedcombathud-yzecoriolis/icons/psychic-waves.svg";
+						case "general" : return "icons/svg/book.svg";
+						case "humanite" : return "modules/enhancedcombathud-yzecoriolis/icons/alien-stare.svg";
+						case "cybernetic" : return "modules/enhancedcombathud-yzecoriolis/icons/cyborg-face.svg";
+						case "bionicsculpt" : return "modules/enhancedcombathud-yzecoriolis/icons/techno-heart.svg";
+						case "mysticalpowers" :return "modules/enhancedcombathud-yzecoriolis/icons/glowing-artifact.svg"
+						default : return "icons/svg/book.svg";
 					}
 			}
 		}
@@ -537,7 +532,20 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async _getPanel() {
-			return new ARGON.MAIN.BUTTON_PANELS.ButtonPanel({buttons: this.actor.items.filter(item => item.type == this.type).map(item => new CORIOLISItemButton({item}))});
+			let validitems = this.actor.items.filter(item => item.type == this.type);
+			
+			if (this.type = "talent") {
+				switch (this.subtype) {
+					case "general" :
+						validitems = validitems.filter(item => !(this.typeblacklist.includes(item.system.category)));
+						break;
+					default :
+						validitems = validitems.filter(item => item.system.category == this.subtype);
+						break;
+				}
+			}
+			
+			return new ARGON.MAIN.BUTTON_PANELS.ButtonPanel({buttons: validitems.map(item => new CORIOLISItemButton({item}))});
 		}
     }
 	
