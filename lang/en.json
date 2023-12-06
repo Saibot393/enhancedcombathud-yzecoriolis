@@ -1,58 +1,42 @@
 {
-	"enhancedcombathud-mutant-year-zero" : {
+	"enhancedcombathud-yzecoriolis" : {
 		"Titles" : {
 			"ActionAction"				: "ACTIONS",
-			"ManeuverAction"			: "MANEUVERS",
-			"ReAction"					: "REACTIONS",
-			"Flee"						: "Flee",
-			"WPG"						: "Wrestle",
-			"Survey"					: "Survey",
-			"TreatInjuries"				: "Treat injuries",
-			"DrawWeapon"				: "Draw weapon",
-			"Standup"					: "Stand up",
-			"Move"						: "Move",
-			"TakeCover"					: "Take cover",
-			"Dodge"						: "Dodge",
-			"Parry"						: "Parry",
-			"BreakFree"					: "Break free",
-			"Chase"						: "Chase",
-			"Help"						: "Help",
-			"Hinder"					: "Hinder",
+			"FreeAction"				: "FREE",
+			"Skills"					: "Skills",
+			"ROLL"						: "ROLL",
+			"FirstAid"					: "First Aid",
+			"Tinkering"					: "Tinkering",
 			"Reload"					: "Reload",
+			"TakeCover"					: "Take Cover",
+			"Duck"						: "Duck",
+			"StandUp"					: "Stand Up",
+			"DrawWeapon"				: "Draw Weapon",
+			"Parry"						: "Parry",
+			"Opportunity"				: "Opportunity Attack",
+			"Overwatch"					: "Go into Overwatch",
 			"Defend"					: "Defend"
 		},
 		
 		"Descriptions" : {
-			"Flee"						: "See Mutant Year Zero core rules book p.??",
-			"WPG"						: "See Mutant Year Zero core rules book p.??",
-			"Survey"					: "See Mutant Year Zero core rules book p.??",
-			"TreatInjuries"				: "See Mutant Year Zero core rules book p.??",
-			"DrawWeapon"				: "See Mutant Year Zero core rules book p.??",
-			"Standup"					: "See Mutant Year Zero core rules book p.??",
-			"Move"						: "See Mutant Year Zero core rules book p.??",
-			"TakeCover"					: "See Mutant Year Zero core rules book p.??",
-			"Dodge"						: "See Mutant Year Zero core rules book p.??",
-			"Parry"						: "See Mutant Year Zero core rules book p.??",
-			"BreakFree"					: "See Mutant Year Zero core rules book p.??",
-			"Chase"						: "See Mutant Year Zero core rules book p.??",
-			"Help"						: "See Mutant Year Zero core rules book p.??",
-			"Hinder"					: "See Mutant Year Zero core rules book p.??",
-			"Reload"					: "See Mutant Year Zero core rules book p.??",
-			"Defend"					: "See Mutant Year Zero core rules book p.??"
+			"Flee"						: "See Coriolis core rules book p.??",
+			"FirstAid"					: "See Coriolis core rules book p.??",
+			"Tinkering"					: "See Coriolis core rules book p.??",
+			"Reload"					: "See Coriolis core rules book p.??",
+			"TakeCover"					: "See Coriolis core rules book p.??",
+			"Duck"						: "See Coriolis core rules book p.??",
+			"StandUp"					: "See Coriolis core rules book p.??",
+			"DrawWeapon"				: "See Coriolis core rules book p.??",
+			"Parry"						: "See Coriolis core rules book p.??",
+			"Opportunity"				: "See Coriolis core rules book p.??",
+			"Overwatch"					: "See Coriolis core rules book p.??",
+			"Defend"					: "See Coriolis core rules book p.??"
 		},
 		
 		"Settings" : {
-			"ConsumeResourcePoints" : {
-				"name"					: "Consume resource points",
-				"descrp"				: "If resource points should be consumed on ability use"				
-			},
-			"ConsumeBullets" : {
-				"name"					: "Consume Bullets",
-				"descrp"				: "If bullets should be consumed when a ranged weapon is used"				
-			},
-			"ShowTalents" : {
-				"name"					: "Show talents button",
-				"descrp"				: "If a button for talents should be shown"				
+			"TalentsThreshhold" : {
+				"name"					: "Talents split threshold",
+				"descrp"				: "The minimum amount of talents in a group for a special group drawer to appear"				
 			},
 			"UseDiceCircles" : {
 				"name"					: "Use dice symbols",

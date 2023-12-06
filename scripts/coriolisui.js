@@ -1,5 +1,5 @@
-import {registerCORIOLISECHSItems, CORIOLISECHActionItems} from "./specialItems.js";
-import {ModuleName, getTooltipDetails, openRollDialoge, openItemRollDialoge} from "./utils.js";
+import {registerCORIOLISECHSItems, CORIOLISECHActionItems, CORIOLISECHFreeActionItems} from "./specialItems.js";
+import {ModuleName, SystemName, getTooltipDetails, openRollDialoge, openItemRollDialoge, firstUpperCase} from "./utils.js";
 import {openNewInput} from "./popupInput.js";
 
 const talenttypes = ["group", "icon", "general", "humanite", "cybernetic", "bionicsculpt", "mysticalpowers"];
@@ -178,7 +178,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 				
 				return new ARGON.DRAWER.DrawerButton([
 					{
-						label: game.i18n.localize(attributes[attribute].label),
+						label: game.i18n.localize(SystemName + ".Attr" + firstUpperCase(attribute)),
 						onClick: () => {openRollDialoge("attribute", attribute, this.actor)}
 					},
 					{
@@ -222,9 +222,26 @@ Hooks.on("argonInit", (CoreHUD) => {
 							valueLabel = valueLabel + "</div>";
 						}
 						
+						let skilltranslationid = firstUpperCase(skill.key);
+						
+						switch (skill.key) {
+							case "meleecombat":
+								skilltranslationid = "MeleeCombat";
+								break;
+							case "rangedcombat":
+								skilltranslationid = "RangedCombat";
+								break;
+							case "datadjinn":
+								skilltranslationid = "DataDjinn";
+								break;
+							case "mysticpowers":
+								skilltranslationid = "MysticPowers";
+								break;
+						}
+						
 						return new ARGON.DRAWER.DrawerButton([
 							{
-								label: game.i18n.localize("CORIOLIS.SKILL_" + skill.key),
+								label: game.i18n.localize(SystemName + ".Skill" + skilltranslationid),
 								onClick: () => {openRollDialoge("skill", skill.key, this.actor)}
 							},
 							{
@@ -245,13 +262,13 @@ Hooks.on("argonInit", (CoreHUD) => {
 						gridCols: "7fr 2fr 2fr",
 						captions: [
 							{
-								label: game.i18n.localize("CORIOLIS.ATTRIBUTES"),
+								label: game.i18n.localize(SystemName+".Attributes"),
 							},
 							{
 								label: "", //looks nicer
 							},
 							{
-								label: game.i18n.localize("ROLL.ROLL"),
+								label: game.i18n.localize(ModuleName+".Titles.ROLL"),
 							},
 						],
 						buttons: attributesButtons
@@ -262,10 +279,10 @@ Hooks.on("argonInit", (CoreHUD) => {
 						gridCols: "7fr 2fr",
 						captions: [
 							{
-								label: game.i18n.localize("CORIOLIS.ATTRIBUTES"),
+								label: game.i18n.localize(SystemName+".Attributes"),
 							},
 							{
-								label: game.i18n.localize("CORIOLIS.ROLL"),
+								label: game.i18n.localize(ModuleName+".Titles.ROLL"),
 							},
 						],
 						buttons: attributesButtons
@@ -279,7 +296,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 						gridCols: "7fr 2fr",
 						captions: [
 							{
-								label: game.i18n.localize("CORIOLIS.SKILLS"),
+								label: game.i18n.localize(SystemName+".SkillCat" + firstUpperCase(skilltype)),
 							},
 							{
 								label: "",
@@ -294,7 +311,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 
 		get title() {
-			return `${game.i18n.localize("CORIOLIS.ATTRIBUTES")} & ${game.i18n.localize("CORIOLIS.SKILLS")}`;
+			return `${game.i18n.localize(SystemName+".Attributes")} & ${game.i18n.localize(ModuleName+".Titles.Skills")}`;
 		}
 	}
   
@@ -358,6 +375,25 @@ Hooks.on("argonInit", (CoreHUD) => {
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[6]), new CORIOLISSpecialActionButton(specialActions[7])));
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[8]), new CORIOLISSpecialActionButton(specialActions[9])));
 			
+			return buttons.filter(button => button.items == undefined || button.items.length);
+		}
+    }
+	
+    class CORIOLISFreeActionPanel extends ARGON.MAIN.ActionPanel {
+		constructor(...args) {
+			super(...args);
+		}
+
+		get label() {
+			return ModuleName+".Titles.FreeAction";
+		}
+		
+		async _getButtons() {
+			const specialActions = Object.values(CORIOLISECHFreeActionItems);
+
+			const buttons = [
+				new CORIOLISSpecialActionButton(specialActions[0])
+			];
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
     }
@@ -493,21 +529,22 @@ Hooks.on("argonInit", (CoreHUD) => {
 		get colorScheme() {
 			return this.color;
 		}
-	
-		get quantity() {
-			if (this.type == "ability") {
-				//return this.actor.system.resource_points.value;
-			}
-			
-			return null;
-		}
 
 		get label() {
-			if (this.type == "ability") {
-				return "CORIOLIS.ABILITY";
+			switch (this.type) {
+				case "gear": return SystemName+".Gear";
+				case "talent": 
+					switch(this.subtype) {
+						case "group" : return SystemName+".TalentCatGroup";
+						case "icon" : return SystemName+".TalentCatIcon";
+						case "general" : return SystemName+".SheetTalents";
+						case "humanite" : return SystemName+".TalentCatHumanite";
+						case "cybernetic" : return SystemName+".TalentCatCybernetic";
+						case "bionicsculpt" : return SystemName+".TalentCatBionicSculpt";
+						case "mysticalpowers" :return SystemName+".TalentCatMysticalPowers"
+						default : return SystemName+".SheetTalents";
+					}
 			}
-			
-			return "TYPES.Item." + this.type;
 		}
 
 		get icon() {
@@ -524,17 +561,6 @@ Hooks.on("argonInit", (CoreHUD) => {
 						case "mysticalpowers" :return "modules/enhancedcombathud-yzecoriolis/icons/glowing-artifact.svg"
 						default : return "icons/svg/book.svg";
 					}
-			}
-		}
-		
-		async getData() {
-			const prevData = super.getData();
-			
-			const quantity = this.quantity;
-			return {
-				...prevData,
-				quantity: quantity,
-				hasQuantity: Number.isNumeric(quantity)
 			}
 		}
 		
@@ -678,7 +704,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async getDefaultSets() {
-			let attacks = this.actor.items.filter((item) => item.type === "weapon" || item.type === "explosive");
+			let attacks = this.actor.items.filter((item) => item.type === "weapon");
 			
 			return {
 				1: {
@@ -727,7 +753,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 				event.stopPropagation();
 				const data = JSON.parse(event.dataTransfer.getData("text/plain"));
 				const item = await fromUuid(data.uuid);
-				if(!["weapon", "explosive"].includes(item?.type)) return;
+				if(item?.type != "weapon") return;
 				const set = event.currentTarget.dataset.set;
 				const slot = event.currentTarget.dataset.slot;
 				const sets = this.actor.getFlag("enhancedcombathud", "weaponSets") || {};
@@ -768,6 +794,7 @@ Hooks.on("argonInit", (CoreHUD) => {
     CoreHUD.defineDrawerPanel(CORIOLISDrawerPanel);
     CoreHUD.defineMainPanels([
 		CORIOLISActionActionPanel,
+		CORIOLISFreeActionPanel,
 		ARGON.PREFAB.PassTurnPanel
     ]);  
 	CoreHUD.defineMovementHud(null);

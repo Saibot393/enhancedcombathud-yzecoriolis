@@ -3,6 +3,7 @@ import {ModuleName} from "./utils.js";
 const ItemReplacementID = "_argonUI_";
 
 var CORIOLISECHActionItems = {};
+var CORIOLISECHFreeActionItems = {}
 
 function registerCORIOLISECHSItems () {
 	let AP3Items = {
@@ -102,9 +103,23 @@ function registerCORIOLISECHSItems () {
 			}
 		}
 	}
+	
+	CORIOLISECHFreeActionItems = {
+		groupflags : {
+			actiontype : "react"
+		},
+		Defend : {
+			img: "icons/svg/shield.svg",
+			name: game.i18n.localize(ModuleName+".Titles.Defend"),
+			type : "base",
+			system : {
+				description : game.i18n.localize(ModuleName+".Descriptions.Defend")
+			}
+		}
+	}
 
 	//some preparation
-	for (let itemset of [AP3Items, AP2Items, AP1Items]) {
+	for (let itemset of [AP3Items, AP2Items, AP1Items, CORIOLISECHFreeActionItems]) {
 		for (let itemkey of Object.keys(itemset)) {
 			if (itemkey != "groupflags") {
 				itemset[itemkey].flags = {};
@@ -124,4 +139,4 @@ function registerCORIOLISECHSItems () {
 	CORIOLISECHActionItems = {...AP3Items, ...AP2Items, ...AP1Items}
 }
 
-export {registerCORIOLISECHSItems, CORIOLISECHActionItems}
+export {registerCORIOLISECHSItems, CORIOLISECHActionItems, CORIOLISECHFreeActionItems}

@@ -3,8 +3,8 @@ const SystemName = "YZECORIOLIS";
 import { coriolisModifierDialog, coriolisRoll } from "/systems/yzecoriolis/module/coriolis-roll.js";
 
 async function getTooltipDetails(item, actortype) {
-	let title, description, itemType, creatureType, skillmodifiers, attributemodifiers, validskills, techTier, category, subtitle, subtitlecolor, range, damage, bonus, quantity, comment, requirement;
-	let propertiesLabel = "MYZ.REQUIREMENT";
+	let title, description, itemType, creatureType, skillmodifiers, attributemodifiers, validskills, techTier, category, subtitle, subtitlecolor, range, automatic, power, radius, damage, bonus, quantity, initiative, crit, explosive, specials, hpbonus, mpbonus;
+	let propertiesLabel = game.i18n.localize(SystemName + ".Special");
 	let properties = [];
 	let materialComponents = "";
 
@@ -30,22 +30,23 @@ async function getTooltipDetails(item, actortype) {
 	}
 	category = item.system.category;
 	range = item.system?.range;
+	automatic = item.system?.automatic;
+	power = item.system?.blastPower;
+	radius = item.system?.blastRadius;
 	damage = item.system?.damage;
 	bonus = item.system?.bonus;
 	quantity = item.system?.quantity;
-	comment = item.system?.comment;
-	requirement = item.system?.requirement;
-	if (!requirement) {
-		requirement = item.system?.dev_requirement;
-		propertiesLabel = "MYZ.DEV_REQUIREMENT";
-	}
+	initiative = item.system?.initiative;
+	crit = item.system?.crit ? Object.values(item.system?.crit).filter(value => value).join("/") : "";
+	explosive = item.system?.explosive;
+	specials = item.system?.special;
+	hpbonus = item.system?.hpBonus;
+	mpbonus = item.system?.mpBonus;
 	
 	properties = [];
 
 	switch (itemType) {
-		case "gear":
 		case "weapon":
-		case "explosive":
 			switch (techTier) {
 				default:
 				case "P":
@@ -67,6 +68,9 @@ async function getTooltipDetails(item, actortype) {
 					subtitle = game.i18n.localize(`${SystemName}.TechTierPortalBuilderRelic`);
 					subtitlecolor = "#ebb010"
 					break;
+			}
+			if (specials) {
+				properties.push(...(Object.values(specials).map(text => {return {label : text}})));
 			}
 			break;
 		case "talent":
@@ -98,60 +102,88 @@ async function getTooltipDetails(item, actortype) {
 			break;
 	}
 	
-	console.log(subtitlecolor);
+	if (range) {
+		range = firstUpperCase(range) + "Range";
+	}
 	
+	if (radius) {
+		radius = firstUpperCase(radius) + "Range";
+	}
 
 	switch (itemType) {
 		case "weapon":
-			let skill;
-			switch (category) {
-				case "melee":
-					switch(creatureType) {
-						case "robot":
-							skill = "ASSAULT";
-							break;
-						default:
-							skill = "FIGHT";
-							break;
-					}
-					break;
-				case "ranged":
-					skill = "SHOOT";
-					break;
-			}
-			
 			details.push({
-				label: "MYZ.DAMAGE",
+				label: SystemName + ".Bonus",
+				value: bonus
+			});
+			details.push({
+				label: SystemName + ".Initiative",
+				value: initiative
+			});
+			details.push({
+				label: SystemName + ".Damage",
 				value: damage
 			});
 			details.push({
-				label: "MYZ.RANGE",
-				value: game.i18n.localize("MYZ." + range.toUpperCase())
+				label: SystemName + ".Crit",
+				value: crit
 			});
+			
+			if (explosive) {
+				details.push({
+					label: SystemName + ".BlastPower",
+					value: power
+				});
+				details.push({
+					label: SystemName + ".BlastRadius",
+					value: game.i18n.localize(SystemName + "." + radius)
+				});
+			}
+			else {
+				details.push({
+					label: SystemName + ".Range",
+					value: game.i18n.localize(SystemName + "." + range)
+				});
+				details.push({
+					label: SystemName + ".Automatic",
+					value: automatic ? '<i class="fas fa-check"></i>' : 'test'
+				});
+			}
+			break;
+		case "gear":
+			if (bonus) {
+				details.push({
+					label: SystemName + ".Bonus",
+					value: bonus
+				});
+			}
+			break;
+		case "talent":
+			if (hpbonus) {
+				details.push({
+					label: SystemName + ".HPBonus",
+					value: hpbonus
+				});
+			}
+			if (mpbonus) {
+				details.push({
+					label: SystemName + ".MPBonus",
+					value: mpbonus
+				});
+			}
 			break;
 	}
 
-	if (description) description = await TextEditor.enrichHTML(description);
-	
-	if (bonus) {
-		details.push({
-			label: "MYZ.BONUS",
-			value: bonus.value
-		});
-	}
+	if (description) description = sanitize(description);
 	
 	if (quantity != undefined && details.length < 3) {
 		details.push({
-			label: "MYZ.QUANTITY",
+			label: SystemName + ".Quantity",
 			value: quantity
 		});		
 	}
-	
-	if (requirement) {
-		properties.push({ label: requirement });
-	}
 
-	return { title, description, subtitle, subtitlecolor, details, properties , propertiesLabel, footerText: comment };
+	return { title, description, subtitle, subtitlecolor, details, properties , propertiesLabel };
 }
 
 function openRollDialoge(rollType, rollID, rollActor, options = {}) {
@@ -178,11 +210,10 @@ function openRollDialoge(rollType, rollID, rollActor, options = {}) {
 			coriolisrollType = skill.category;
 			break;
 		case "weapon":
-		case "explosive":
 			item = rollActor.items.get(rollID);
 			
 			if (item) {
-				if (item.system.melee && !(rollType == "explosive")) {
+				if (item.system.melee && !item?.explosive) {
 					skillKey = "meleecombat";
 					attributeKey = "strength";
 				}
@@ -239,4 +270,16 @@ function openItemRollDialoge(item, rollActor, options = {}) {
 	}
 }
 
-export { ModuleName, getTooltipDetails, openRollDialoge, openItemRollDialoge }
+function sanitize(string) {
+	let parser = new DOMParser();
+	
+	let html = parser.parseFromString(string, 'text/html');
+	
+	return html.body.innerText;
+}
+
+function firstUpperCase(string) {
+	return string[0].toUpperCase() + string.slice(1);
+}
+
+export { ModuleName, SystemName, getTooltipDetails, openRollDialoge, openItemRollDialoge, firstUpperCase }
