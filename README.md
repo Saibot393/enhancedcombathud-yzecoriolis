@@ -15,6 +15,17 @@ This module adjusts various Argon features for the Coriolis system:
 - **Movement** will automatically consume AP
 
 Due to licensing i am not able to include official text from the book for the description of the standard actions (help, move, take cover...). The default description of these actions therefore only points to page in the rule book which describes them. Should you wish to customize the description of these actions, you can crate an item (i recommend using a talent) with the name `_argonUI_#ActionID` where `#ActionID` is replaced by the actions id:
+- "first aid" : `FirstAid`
+- "tinkering" : `Tinkering`
+- "reload" : `Reload`
+- "take cover" : `TakeCover`
+- "duck" : `Duck`
+- "stand up" : `StandUp`
+- "draw weapon" : `DrawWeapon`
+- "parry" : `Parry`
+- "opportunity attack" : `Opportunity`
+- "go into overwatch" : `Overwatch`
+- "defend" : `Defend`
   
 **You need to reload the game to apply the changes to the descriptions!**
 
