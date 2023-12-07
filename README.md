@@ -3,6 +3,8 @@ An implementation of the [Argon - Combat HUD](https://foundryvtt.com/packages/en
 
 ![image](https://github.com/Saibot393/enhancedcombathud-yzecoriolis/assets/137942782/ac620881-aee4-4ee4-8db6-bea9465cd68f)
 
+<sup>All icon included in this project are from [Game-icons.net](game-icons.net), used under the [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license</sup>
+
 ### The documentation for the core argon features can be found [here](https://api.theripper93.com/modulewiki/enhancedcombathud/free)
 
 This module adjusts various Argon features for the Coriolis system:
