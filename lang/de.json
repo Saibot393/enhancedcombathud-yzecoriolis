@@ -2,57 +2,41 @@
 	"enhancedcombathud-mutant-year-zero" : {
 		"Titles" : {
 			"ActionAction"				: "AKTIONEN",
-			"ManeuverAction"			: "MANEUVER",
-			"ReAction"					: "REAKTIONEN",
-			"Flee"						: "Flüchten",
-			"WPG"						: "Ringen",
-			"Survey"					: "Überblicken",
-			"TreatInjuries"				: "Behandeln",
-			"DrawWeapon"				: "Waffe ziehen",
-			"Standup"					: "Aufstehen",
-			"Move"						: "Bewegen",
-			"TakeCover"					: "Deckung",
-			"Dodge"						: "Ausweichen",
-			"Parry"						: "Parieren",
-			"BreakFree"					: "Losreißen",
-			"Chase"						: "Verfolgen",
-			"Help"						: "Helfen",
-			"Hinder"					: "Hindern",
+			"FreeAction"				: "FREI",
+			"Skills"					: "Fertigkeiten",
+			"ROLL"						: "WÜRFELN",
+			"FirstAid"					: "Erstehilfe",
+			"Tinkering"					: "Basteln",
 			"Reload"					: "Nachladen",
+			"TakeCover"					: "Deckung",
+			"Duck"						: "ducken",
+			"StandUp"					: "aufstehen",
+			"DrawWeapon"				: "Waffe ziehen",
+			"Parry"						: "parieren",
+			"Opportunity"				: "Gelegenheits Angriff",
+			"Overwatch"					: "Go into Overwatch",
 			"Defend"					: "Verteidigen"
 		},
 		
 		"Descriptions" : {
-			"Flee"						: "Siehe Mutant Year Zero Regelbuch S.??",
-			"WPG"						: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Survey"					: "Siehe Mutant Year Zero Regelbuch S.??",
-			"TreatInjuries"				: "Siehe Mutant Year Zero Regelbuch S.??",
-			"DrawWeapon"				: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Standup"					: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Move"						: "Siehe Mutant Year Zero Regelbuch S.??",
-			"TakeCover"					: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Dodge"						: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Parry"						: "Siehe Mutant Year Zero Regelbuch S.??",
-			"BreakFree"					: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Chase"						: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Help"						: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Hinder"					: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Reload"					: "Siehe Mutant Year Zero Regelbuch S.??",
-			"Defend"					: "Siehe Mutant Year Zero Regelbuch S.??"
+			"Flee"						: "Siehe Coriolis Regelbuch S.??",
+			"FirstAid"					: "Siehe Coriolis Regelbuch S.??",
+			"Tinkering"					: "Siehe Coriolis Regelbuch S.??",
+			"Reload"					: "Siehe Coriolis Regelbuch S.??",
+			"TakeCover"					: "Siehe Coriolis Regelbuch S.??",
+			"Duck"						: "Siehe Coriolis Regelbuch S.??",
+			"StandUp"					: "Siehe Coriolis Regelbuch S.??",
+			"DrawWeapon"				: "Siehe Coriolis Regelbuch S.??",
+			"Parry"						: "Siehe Coriolis Regelbuch S.??",
+			"Opportunity"				: "Siehe Coriolis Regelbuch S.??",
+			"Overwatch"					: "Siehe Coriolis Regelbuch S.??",
+			"Defend"					: "Siehe Coriolis Regelbuch S.??"
 		},
 		
 		"Settings" : {
-			"ConsumeResourcePoints" : {
-				"name"					: "Verbrauche Resourcen Punkte",
-				"descrp"				: "Ob Resourcen Punkte beim Einsatz von Fertigkeiten verbraucht werden sollen"				
-			},
-			"ConsumeBullets" : {
-				"name"					: "Verbrauche Kugeln",
-				"descrp"				: "Ob Kugeln beim Einsatz von Fernkampfwaffen verbraucht werden sollen"				
-			},
-			"ShowTalents" : {
-				"name"					: "Zeige Talente Knopf",
-				"descrp"				: "Ob ein Knopf für Talente angezeigt werden soll"				
+			"TalentsThreshold" : {
+				"name"					: "Talente teilungs Grenze",
+				"descrp"				: "Die minimale Menge an Talenten in einer Gruppe um eine eigene Kategorie in der UI zu erhalten"				
 			},
 			"UseDiceCircles" : {
 				"name"					: "Nutze Würfel Symbole",
@@ -61,8 +45,8 @@
 		}
 	},
 	
-    "enhancedcombathud.themeOptions.mainAction" : "Farben Aktion",
-    "enhancedcombathud.themeOptions.bonusAction" : "Farben Maneuver",
-    "enhancedcombathud.themeOptions.freeAction" : "Nicht von Argon MYZ genutzt",
-    "enhancedcombathud.themeOptions.reaction" : "Farben Reaktion"
+    "enhancedcombathud.themeOptions.mainAction" : "Farbe 3AP Aktion",
+    "enhancedcombathud.themeOptions.bonusAction" : "Farbe 2AP Aktion",
+    "enhancedcombathud.themeOptions.freeAction" : "Farbe 1AP Aktion",
+    "enhancedcombathud.themeOptions.reaction" : "Frabe freie Aktion"
 }

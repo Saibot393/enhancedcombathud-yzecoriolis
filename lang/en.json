@@ -34,7 +34,7 @@
 		},
 		
 		"Settings" : {
-			"TalentsThreshhold" : {
+			"TalentsThreshold" : {
 				"name"					: "Talents split threshold",
 				"descrp"				: "The minimum amount of talents in a group for a special group drawer to appear"				
 			},
@@ -45,8 +45,8 @@
 		}
 	},
 	
-    "enhancedcombathud.themeOptions.mainAction" : "Action Colors",
-    "enhancedcombathud.themeOptions.bonusAction" : "Maneuver Colors",
-    "enhancedcombathud.themeOptions.freeAction" : "Not used by Argon MYZ",
-    "enhancedcombathud.themeOptions.reaction" : "Reaction Colors"
+    "enhancedcombathud.themeOptions.mainAction" : "3AP action Colors",
+    "enhancedcombathud.themeOptions.bonusAction" : "2AP action Colors",
+    "enhancedcombathud.themeOptions.freeAction" : "1AP action Colors",
+    "enhancedcombathud.themeOptions.reaction" : "Free action Colors"
 }

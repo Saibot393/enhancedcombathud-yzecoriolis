@@ -106,7 +106,7 @@ function registerCORIOLISECHSItems () {
 	
 	CORIOLISECHFreeActionItems = {
 		groupflags : {
-			actiontype : "react"
+			APconsumption : 0
 		},
 		Defend : {
 			img: "icons/svg/shield.svg",
