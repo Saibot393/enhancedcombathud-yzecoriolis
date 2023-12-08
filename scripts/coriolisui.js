@@ -36,7 +36,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 
 		get isDead() {
-			return Object.values(this.actor.system.attributes).find(attribute => attribute.value <= 0 && attribute.max > 0);
+			return ((this.actor.system.hitPoints.value <= 0 && this.actor.system.hitPoints.max > 0) || (this.actor.system.mindPoints.value <= 0 && this.actor.system.mindPoints.max > 0));
 		}
 
 		async getStatBlocks() {
