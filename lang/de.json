@@ -15,7 +15,9 @@
 			"Parry"						: "parieren",
 			"Opportunity"				: "Gelegenheits Angriff",
 			"Overwatch"					: "vorbereiten",
-			"Defend"					: "Verteidigen"
+			"Defend"					: "Verteidigen",
+			"AimedShot"					: "gezielt",
+			"QuickShot"					: "schnell"
 		},
 		
 		"Descriptions" : {
@@ -41,6 +43,10 @@
 			"UseDiceCircles" : {
 				"name"					: "Nutze Würfel Symbole",
 				"descrp"				: "Ob Würfel Symbole anstatt Zahlen für Attribute und Fertigkeiten angezeigt werden sollen"				
+			},
+			"ShowAimedQuick" : {
+				"name"					: "Zeige gezielt und schnell",
+				"descrp"				: "Ob optionen für gezielte und schnelle Schüsse bei Fernkampfwaffen angezeigt werden sollen"
 			}
 		}
 	},

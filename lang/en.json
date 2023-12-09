@@ -15,7 +15,9 @@
 			"Parry"						: "Parry",
 			"Opportunity"				: "Opportunity Attack",
 			"Overwatch"					: "Go into Overwatch",
-			"Defend"					: "Defend"
+			"Defend"					: "Defend",
+			"AimedShot"					: "aimed",
+			"QuickShot"					: "quick"
 		},
 		
 		"Descriptions" : {
@@ -41,6 +43,10 @@
 			"UseDiceCircles" : {
 				"name"					: "Use dice symbols",
 				"descrp"				: "If dice symbols instead of numbers should be used for Skills and Attributes"				
+			},
+			"ShowAimedQuick" : {
+				"name"					: "Show aimed and quick",
+				"descrp"				: "If options for aimed and quick shots should be shown for ranged weapons"
 			}
 		}
 	},

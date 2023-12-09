@@ -28,4 +28,14 @@ Hooks.once("init", () => {  // game.settings.get(cModuleName, "")
 	requiresReload: true
   });
   
+  game.settings.register(ModuleName, "ShowAimedQuick", {
+	name: game.i18n.localize(ModuleName+".Settings.ShowAimedQuick.name"),
+	hint: game.i18n.localize(ModuleName+".Settings.ShowAimedQuick.descrp"),
+	scope: "client",
+	config: true,
+	type: Boolean,
+	default: false,
+	requiresReload: true
+  });
+  
 });

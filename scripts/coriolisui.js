@@ -22,6 +22,8 @@ Hooks.on("argonInit", (CoreHUD) => {
 		constructor(...args) {
 			super(...args);
 			
+			this.usedArmor = undefined;
+			
 			Hooks.on("updateItem", (item, changes, infos, userid) => {
 				if (item.actor == this.actor) {
 					if (changes?.system?.hasOwnProperty("equipped")) {
@@ -42,20 +44,21 @@ Hooks.on("argonInit", (CoreHUD) => {
 		async getStatBlocks() {
 			let ActiveArmor = canvas.tokens.controlled[0].actor.items.filter(item => item.type == "armor" && item.system.equipped);
 			
-			let ArmorValue = 0;
-			let usedArmor = undefined;
+			let ArmorValue = -1;
+			this.usedArmor = undefined;
 			
-			ActiveArmor.forEach((armoritem) => {if (armoritem.system.armorRating > ArmorValue) {ArmorValue = armoritem.system.armorRating; usedArmor = armoritem;}});
+			ActiveArmor.forEach((armoritem) => {if (armoritem.system.armorRating > ArmorValue) {ArmorValue = armoritem.system.armorRating; this.usedArmor = armoritem;}});
 			
 			let Blocks = [];
 			
-			if (usedArmor) {
+			if ( this.usedArmor) {
 				Blocks.push([
 					{
-						text: game.i18n.localize(usedArmor.name),
+						text: game.i18n.localize( this.usedArmor.name),
+						id: "armorStat"
 					},
 					{
-						text: usedArmor.system.armorRating,
+						text:  this.usedArmor.system.armorRating,
 						color: "var(--ech-movement-baseMovement-background)",
 					},
 				]);
@@ -64,7 +67,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 			return Blocks;
 		}
 		
-		async getConditionBars() {
+		async getResourceBars() {
 			const size = 12;
 			
 			let bars = {left : [], right : []};
@@ -92,7 +95,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 					let html = `<div class="bar" style="display:flex;flex-direction:column-reverse;border:1px solid #a4a4a4;padding:0px 5px 0px 5px;background-color:rgba(113, 130, 190, 0.35);border-radius:2px">`;
 					
 					for (let i = 1; i <= this.actor.system[bartype].max; i++) {
-						html = html + `<div style="background-color:${i<=this.actor.system[bartype].value ? fillcolor : "#000000"};width:${1.6 * size}px;height:${size}px;margin-top:1.75px;margin-right:1px;margin-bottom:1.75px;margin-left:1px;border-radius:2px"></div>`;
+						html = html + `<div id="${bartype}-${i}" style="background-color:${i<=this.actor.system[bartype].value ? fillcolor : "#000000"};width:${1.6 * size}px;height:${size}px;margin-top:1.75px;margin-right:1px;margin-bottom:1.75px;margin-left:1px;border-radius:2px"></div>`;
 					}
 					
 					html = html + `</div>`;
@@ -122,22 +125,55 @@ Hooks.on("argonInit", (CoreHUD) => {
 		async _renderInner(data) {
 			await super._renderInner(data);
 			
-			const ConditionBars = await this.getConditionBars();
+			const armorBlock = this.element.querySelector("#armorStat").parentElement;
+
+			if (armorBlock) {
+				armorBlock.onclick = () => {openItemRollDialoge(this.usedArmor, this.actor)};
+			}
 			
-			for (const side of Object.keys(ConditionBars)) {
-				const Bar = document.createElement("div");
+			const ResourceBars = await this.getResourceBars();
+			for (const side of Object.keys(ResourceBars)) {
+				const Bars = document.createElement("div");
 				
-				Bar.style = `display:flex;position:absolute;${side}:0px;flex-direction:row`;
+				Bars.style = `display:flex;position:absolute;${side}:0px;flex-direction:row`;
 				
-				for (let i = 0; i < ConditionBars[side].length; i++) {
-					Bar.innerHTML = Bar.innerHTML + ConditionBars[side][i];
+				for (let i = 0; i < ResourceBars[side].length; i++) {
+					Bars.innerHTML = Bars.innerHTML + ResourceBars[side][i];
 				}
 				
-				this.element.appendChild(Bar);
+				for (const Bar of Bars.children) {
+					for (const BarElement of Bar.children) {
+						let id = BarElement.id;
+						BarElement.onclick = () => {this.onResourceBarClick(id)}
+					}
+				}
+				
+				this.element.appendChild(Bars);
 			}
 					
 			this.element.querySelector(".player-buttons").style.right = "0%";
 		}
+		
+		async onResourceBarClick(id) {
+			let resourceType = id.split("-")[0];
+			let resourceValue = id.split("-")[1];
+			
+			if (this.actor.system[resourceType]) {
+				if (this.actor.system[resourceType].value == resourceValue) {
+					await CORIOLISPortraitPanel.setResource(this.actor, resourceType, resourceValue-1);
+				}
+				else {
+					await CORIOLISPortraitPanel.setResource(this.actor, resourceType, resourceValue);
+				}
+			}
+			
+		}
+		
+		static async setResource(actor, resourceType, value) {
+			if (actor && actor.system[resourceType]) {
+				await actor.update({system : {[resourceType] : {value : value}}})
+			}
+		}	
 	}
 	
 	class CORIOLISDrawerPanel extends ARGON.DRAWER.DrawerPanel {
@@ -437,14 +473,27 @@ Hooks.on("argonInit", (CoreHUD) => {
 			return null;
 		}
 		
-		async _onLeftClick(event) {
+		async _onLeftClick(event, special = "") {
+			if (!(event.target.id != "specialAction" || special)) return;
+			
 			var used = false;
 			
 			if (this.item.type == "weapon") {
 				used = true;
 				
+				let modifier = 0;
+				
+				switch (special) {
+					case "aimed":
+						modifier = 2;
+						break;
+					case "quick":
+						modifier = -2;
+						break;
+				}
+				
 				if (used) {
-					openItemRollDialoge(this.item, this.actor);
+					openItemRollDialoge(this.item, this.actor, {modifier : modifier});
 				}
 			}
 			
@@ -457,63 +506,99 @@ Hooks.on("argonInit", (CoreHUD) => {
 			if (this.item.type == "talent") {
 				this.item.sendToChat();
 			}
-
-			if (this.item.type == "ability") {
-				if (game.settings.get(ModuleName, "ConsumeResourcePoints")) {
-					let consumeamount = 1;
-					
-					if (game.settings.get(ModuleName, "AskResourcePointAmount")) {
-						consumeamount = await openNewInput("number", game.i18n.localize(ModuleName+"Titles.ResourceConsume"), game.i18n.localize(ModuleName+"Titles.HowmanyResources"), {defaultValue : 1});
-					}
-					
-					const newvalue = this.actor.system.resource_points.value - consumeamount;
-					
-					if (newvalue >= 0) {
-						this.actor.update({system : {resource_points : {value : newvalue}}});
-						
-						used = true;
-					}
-				}
-				else {
-					used = true;
-				}
-				
-				if (used) {
-					this.item.sendToChat();
-				}
-			}
 			
 			if (used) {
-				CORIOLISItemButton.consumeActionEconomy(this.item);
-			}
-		}
-
-		static consumeActionEconomy(item) {
-			let consumeID = undefined;
-			
-			if (item.type == "weapon") {
-				consumeAction("action");
-			}
-			
-			if (item.type == "gear") {
-				consumeAction("maneuver");
-			}
-			
-			if (item.type == "ability") {
-				consumeAction(this.abilityactiontype(item));
+				CORIOLISItemButton.consumeActionEconomy(this.item, special);
 			}
 		}
 		
-		static abilityactiontype(item) {
-			if (item.system.description.includes("(R)")) {
-				return "react";
+		async specialOptions() {
+			let Options = [];
+			
+			if (game.settings.get(ModuleName, "ShowAimedQuick")) {
+				if (this.item.type == "weapon") {
+					if (!this.item.system.melee) {
+						Options.push({
+							text : game.i18n.localize(ModuleName+".Titles.AimedShot"),
+							special : "aimed"
+						});
+						
+						Options.push({
+							text : game.i18n.localize(ModuleName+".Titles.QuickShot"),
+							special : "quick"
+						});
+					}	
+				}
 			}
 			
-			if (item.system.description.includes("(E)")) {
-				return "";
-			}
+			return Options;
+		}
+		
+		async _onTooltipMouseEnter(event) {
+			await super._onTooltipMouseEnter(event);
 			
-			return "action";
+			if (this.element.querySelector("#specialAction")) {
+				this.element.querySelector("#maintitle").style.visibility = "hidden";
+				for (const specialelement of this.element.querySelectorAll("#specialAction")) {
+					specialelement.style.visibility = "";
+				}
+			}
+		}
+
+		async _onTooltipMouseLeave(event) {
+			await super._onTooltipMouseLeave(event);
+			
+			if (this.element.querySelector("#maintitle")) {
+				this.element.querySelector("#maintitle").style.visibility = "";
+				for (const specialelement of this.element.querySelectorAll("#specialAction")) {
+					specialelement.style.visibility = "hidden";
+				}
+			}
+		}
+	
+		async _renderInner(data) {
+			await super._renderInner(data);
+			
+			const specialActions = await this.specialOptions();
+			if (specialActions.length > 0) {
+				this.element.querySelector("span").id = "maintitle";
+				
+				for (let i = 0; i < specialActions.length; i++) {
+					let Action = specialActions[i];
+					let ActionTitle = document.createElement("span");
+					ActionTitle.id = "specialAction";
+					ActionTitle.classList.add("action-element-title");
+					ActionTitle.innerHTML = Action.text;
+					ActionTitle.onclick = (event) => {event.stopPropagation(); event.preventDefault(); this._onLeftClick(event, Action.special)};
+					ActionTitle.style.visibility = "hidden";
+					
+					ActionTitle.style.width = `${100/specialActions.length}%`;
+					ActionTitle.style.left = `${i * 100/specialActions.length}%`;
+					
+					ActionTitle.onmouseenter = () => {ActionTitle.style.filter = "brightness(66%)"}
+					ActionTitle.onmouseleave = () => {ActionTitle.style.filter = ""}
+					
+					this.element.appendChild(ActionTitle);
+				}
+			}
+		}
+
+		static consumeActionEconomy(item, special = "") {
+			let consumeID = undefined;
+			
+			if (item.type == "weapon") {
+				switch (special) {
+					case "aimed":
+						consumeAction(3);
+						break;
+					case "quick":
+						consumeAction(1);
+						break;
+					default:
+						consumeAction(2);
+						break;
+				}
+			}
 		}
 	}
   

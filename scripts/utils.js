@@ -186,11 +186,12 @@ async function getTooltipDetails(item, actortype) {
 	return { title, description, subtitle, subtitlecolor, details, properties , propertiesLabel };
 }
 
-function openRollDialoge(rollType, rollID, rollActor, options = {}) {
+function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) {
 	let attributeKey;
 	let attribute;
 	let skillKey;
 	let skill;
+	let bonus = 0;
 	
 	let item = null;
 	
@@ -226,6 +227,14 @@ function openRollDialoge(rollType, rollID, rollActor, options = {}) {
 				attribute = rollActor.system.attributes[attributeKey];
 			}
 			break;
+		case "armor":
+			item = rollActor.items.get(rollID);
+			bonus = item.system.armorRating;
+			break;
+	}
+	
+	if (options.modifier) {
+		bonus = bonus + options.modifier;
 	}
 	
     const rollData = {
@@ -236,19 +245,19 @@ function openRollDialoge(rollType, rollID, rollActor, options = {}) {
       skillKey: skillKey,
       skill: skill ? skill.value : 0,
       modifier: 0,
-      bonus: 0,
-      rollTitle: rollID,
+      bonus: bonus,
+      rollTitle: item.name? item.name : rollID,
       pushed: false,
-      isAutomatic: item?.automatic,
-      isExplosive: item?.explosive,
-      blastPower: item?.blastPower,
-      blastRadius: item?.blastRadius,
-      damage: item?.damage,
-      damageText: item?.damageText,
-      range: item?.range,
-      crit: item?.crit?.numericValue,
-      critText: item?.crit?.customValue,
-      features: item?.special ? Object.values(item.special).join(", ") : "",
+      isAutomatic: item?.system.automatic,
+      isExplosive: item?.system.explosive,
+      blastPower: item?.system.blastPower,
+      blastRadius: item?.system.blastRadius,
+      damage: item?.system.damage,
+      damageText: item?.system.damageText,
+      range: item?.system.range,
+      crit: item?.system.crit?.numericValue,
+      critText: item?.system.crit?.customValue,
+      features: item?.system.special ? Object.values(item.system.special).join(", ") : "",
     };
 	
 	console.log(rollData);
@@ -264,7 +273,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {}) {
     }, false);
 }
 
-function openItemRollDialoge(item, rollActor, options = {}) {
+function openItemRollDialoge(item, rollActor, options = {modifier : 0}) {
 	if (rollActor.items.get(item.id)) {
 		openRollDialoge(item.type, item.id, rollActor, options);
 	}
