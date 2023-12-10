@@ -36,6 +36,14 @@
 		},
 		
 		"Settings" : {
+			"InjurieTable" : {
+				"name"					: "Kritische Verletzungen Tabelle",
+				"descrp"				: "Die Tabelle auf welche gewürfelt wird wenn die Lebenspunkte auf 0 fallen (ID der Tabelle)"
+			},
+			"AutoRollInjuries" : {
+				"name"					: "Verletzungen automatisch Würfeln",
+				"descrp"				: "Ob kritische Verletzungen automatisch gewürfelt werden sollen, wenn die Lebenspunkte auf 0 fallen"				
+			},
 			"TalentsThreshold" : {
 				"name"					: "Talente teilungs Grenze",
 				"descrp"				: "Die minimale Menge an Talenten in einer Gruppe um eine eigene Kategorie in der UI zu erhalten"				

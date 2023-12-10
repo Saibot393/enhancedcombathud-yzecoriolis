@@ -31,6 +31,8 @@ Hooks.on("argonInit", (CoreHUD) => {
 					}
 				}
 			});
+			
+			this.wasDead = {};
 		}
 
 		get description() {
@@ -38,7 +40,21 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 
 		get isDead() {
-			return ((this.actor.system.hitPoints.value <= 0 && this.actor.system.hitPoints.max > 0) || (this.actor.system.mindPoints.value <= 0 && this.actor.system.mindPoints.max > 0));
+			let isDead = {};
+			
+			for (const key of ["hitPoints", "mindPoints"]) {
+				isDead[key] = (this.actor.system[key].value <= 0 && this.actor.system[key].max > 0);
+			}
+			
+			if (game.settings.get(ModuleName, "AutoRollInjuries")) {
+				if (isDead.hitPoints && !isDead.mindPoints) {
+					CORIOLISPortraitPanel.rollInjuries();
+				}
+			}
+			
+			this.wasDead = isDead;
+			
+			return Object.values(isDead).find(value => value);
 		}
 
 		async getStatBlocks() {
@@ -174,6 +190,13 @@ Hooks.on("argonInit", (CoreHUD) => {
 				await actor.update({system : {[resourceType] : {value : value}}})
 			}
 		}	
+		
+		static async rollInjuries() {
+			let table = await fromUuid("RollTable." + game.settings.get(ModuleName, "InjurieTable"));
+			if (table) {
+				table.draw({roll: true, displayChat: true});
+			}
+		}
 	}
 	
 	class CORIOLISDrawerPanel extends ARGON.DRAWER.DrawerPanel {

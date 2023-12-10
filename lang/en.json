@@ -36,6 +36,14 @@
 		},
 		
 		"Settings" : {
+			"InjurieTable" : {
+				"name"					: "Critical injuries roll table",
+				"descrp"				: "The table rolled when the hitpoints fall to 0 (ID of table)"
+			},
+			"AutoRollInjuries" : {
+				"name"					: "Automatically roll injuries",
+				"descrp"				: "If critical injuries should be rolled automatically when the hitpoints fall to 0"				
+			},
 			"TalentsThreshold" : {
 				"name"					: "Talents split threshold",
 				"descrp"				: "The minimum amount of talents in a group for a special group drawer to appear"				
