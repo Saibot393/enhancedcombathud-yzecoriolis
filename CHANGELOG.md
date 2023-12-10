@@ -1,3 +1,7 @@
+## v1.2.0
+- Added world setting Critical injuries roll table to set the table rolled for critical injuries
+- Added client setting Automatically roll injuries to automatically roll on the critical injuries table when the hitpoints fall to 0
+
 ## v1.1.0
 - Improved weapon rolls
 - Armor can now be rolled from the portrait armor display
