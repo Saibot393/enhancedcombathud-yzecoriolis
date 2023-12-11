@@ -1,3 +1,6 @@
+## v1.2.2
+- Fixed bug that occurred when a acharacter doesn't have an active armor
+
 ## v1.2.1
 - Small ui fix for compatibility with Argon Core v2.4.0
 
