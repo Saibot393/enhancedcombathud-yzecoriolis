@@ -33,6 +33,10 @@ Hooks.on("argonInit", (CoreHUD) => {
 			});
 			
 			this.wasDead = {};
+			
+			for (const key of ["hitPoints", "mindPoints"]) {
+				this.wasDead[key] = (this.actor.system[key].value <= 0 && this.actor.system[key].max > 0);
+			}
 		}
 
 		get description() {
@@ -47,7 +51,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 			}
 			
 			if (game.settings.get(ModuleName, "AutoRollInjuries")) {
-				if (isDead.hitPoints && !isDead.mindPoints) {
+				if (isDead.hitPoints && !this.wasDead.hitPoints) {
 					CORIOLISPortraitPanel.rollInjuries();
 				}
 			}
