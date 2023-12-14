@@ -1,3 +1,6 @@
+## v1.2.3
+- Improved auto injurie roll logic
+
 ## v1.2.2
 - Fixed bug that occurred when a acharacter doesn't have an active armor
 
