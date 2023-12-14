@@ -145,7 +145,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		async _renderInner(data) {
 			await super._renderInner(data);
 			
-			const armorBlock = this.element.querySelector("#armorStat").parentElement;
+			const armorBlock = this.element.querySelector("#armorStat")?.parentElement;
 
 			if (armorBlock) {
 				armorBlock.onclick = () => {openItemRollDialoge(this.usedArmor, this.actor)};
