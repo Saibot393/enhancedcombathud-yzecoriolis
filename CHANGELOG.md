@@ -1,3 +1,10 @@
+## v1.3.0
+- Added first part of automatic character advancement
+  - Added world setting to turn this feature on/off
+  - Added world setting menu to edit the experience gain options
+  - Added control button to trigger character advancement for players
+  - Added advance indicator to Argon HUD portrait to indicate an open character advancement and open the advancement menu
+    
 ## v1.2.3
 - Improved auto injurie roll logic
 
