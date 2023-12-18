@@ -1,7 +1,26 @@
 import {ModuleName} from "./utils.js";
+import { fixXPoptionSetting, XPOptionsSettingWindow } from "./levelup.js";
 
 Hooks.once("init", () => {  // game.settings.get(cModuleName, "")
   //Settings
+  //world
+  game.settings.register(ModuleName, "XPoptions", {
+	scope: "world",
+	config: false,
+	type: Object,
+	default: {}
+  });
+  
+  game.settings.register(ModuleName, "useXPautomation", {
+	name: game.i18n.localize(ModuleName+".Settings.useXPautomation.name"),
+	hint: game.i18n.localize(ModuleName+".Settings.useXPautomation.descrp"),
+	scope: "world",
+	config: true,
+	type: Boolean,
+	default: true,
+	requiresReload: true
+  });
+  
   game.settings.register(ModuleName, "InjurieTable", {
 	name: game.i18n.localize(ModuleName+".Settings.InjurieTable.name"),
 	hint: game.i18n.localize(ModuleName+".Settings.InjurieTable.descrp"),
@@ -58,3 +77,13 @@ Hooks.once("init", () => {  // game.settings.get(cModuleName, "")
   });
   
 });
+
+Hooks.once("ready", () => {
+	fixXPoptionSetting("XPoptions");
+});
+
+//Hooks
+Hooks.on("renderSettingsConfig", (pApp, pHTML, pData) => {
+	pHTML.find(`div.form-group[data-setting-id="${ModuleName}.useXPautomation"]`).after(`<button name="openXPoptionsmenu"> ${game.i18n.localize(ModuleName + ".Titles.openXPoptionsmenu")}</button>`)
+	pHTML.find(`button[name="openXPoptionsmenu"]`).on("click", () => {new XPOptionsSettingWindow().render(true);});
+});  

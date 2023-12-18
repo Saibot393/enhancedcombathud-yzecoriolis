@@ -20,6 +20,7 @@ The following icons are included
 	- cyborg-face.svg
 	- person.svg
 	- team-upgrade.svg
+	- upgrade.svg
 - By [John Colburn](https://ninmunanmu.com/)
 	- pistol-gun.svg
 - By [Skoll](https://game-icons.net/)

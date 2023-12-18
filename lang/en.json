@@ -17,7 +17,20 @@
 			"Overwatch"					: "Go into Overwatch",
 			"Defend"					: "Defend",
 			"AimedShot"					: "aimed",
-			"QuickShot"					: "quick"
+			"QuickShot"					: "quick",
+			
+			"LevelUP"					: "Trigger character advancement",
+			"openXPoptionsmenu"			: "Configure Experince options",
+			"XPOptions"					: "Experience Options",
+			"defaultXPOption" : {
+				"name"					: "New Experience option"
+			},
+			"addXPOption"				: "Add Experience option",
+			"confirmChanges"			: "Confirm and save",
+			"OpenXPMenu"				: "Open character advancement menu",
+			"CharacterAdvancement"		: "Character advancement",
+			"CheckWhichApplies"			: "Check all questions you can answer with \"yes\":",
+			"confirmXP"					: "Confirm"
 		},
 		
 		"Descriptions" : {
@@ -36,6 +49,10 @@
 		},
 		
 		"Settings" : {
+			"useXPautomation" : {
+				"name"					: "Use XP automation",
+				"descrp"				: "If a button should be shown in the control menu to trigger automatic character advancement for players"
+			},
 			"InjurieTable" : {
 				"name"					: "Critical injuries roll table",
 				"descrp"				: "The table rolled when the hitpoints fall to 0 (ID of table)"

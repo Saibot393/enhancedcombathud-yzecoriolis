@@ -17,7 +17,20 @@
 			"Overwatch"					: "vorbereiten",
 			"Defend"					: "Verteidigen",
 			"AimedShot"					: "gezielt",
-			"QuickShot"					: "schnell"
+			"QuickShot"					: "schnell",
+			
+			"LevelUP"					: "Löse Charakterverbesserung aus",
+			"openXPoptionsmenu"			: "Erfahrungsoptionen anpassen",
+			"XPOptions"					: "Erfahrungsoptionen",
+			"defaultXPOption" : {
+				"name"					: "Neue Erfahrungsoption"
+			},
+			"addXPOption"				: "Füge neue Erfahrungsoption hinzu",
+			"confirmChanges"			: "Bestätigen und speichern",
+			"OpenXPMenu"				: "Öffne Charakterverbesserungs Menü",
+			"CharacterAdvancement"		: "Charakterverbesserungs",
+			"CheckWhichApplies"			: "Kreuze alle Fragen an welche du mit \"ja\" beantworten kannst:",
+			"confirmXP"					: "Bestätigen"
 		},
 		
 		"Descriptions" : {
@@ -36,6 +49,10 @@
 		},
 		
 		"Settings" : {
+			"useXPautomation" : {
+				"name"					: "Nutze Erfahrungs Automatisierung",
+				"descrp"				: "Ob ein Knopf in der Kontrollleiste angezeigt werden soll um die automatische Charakterverbesserung für Spieler aus zu lösen"
+			},
 			"InjurieTable" : {
 				"name"					: "Kritische Verletzungen Tabelle",
 				"descrp"				: "Die Tabelle auf welche gewürfelt wird wenn die Lebenspunkte auf 0 fallen (ID der Tabelle)"
