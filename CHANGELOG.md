@@ -1,3 +1,6 @@
+## v1.3.2
+- Fixed bug that prevented weapon boni from being used for rolls
+
 ## v1.3.1
 - Fixed bug that sometimes prevented skill and attribute rolls from being rolled
 
