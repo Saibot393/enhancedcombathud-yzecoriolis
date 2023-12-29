@@ -192,6 +192,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 	let skillKey;
 	let skill;
 	let bonus = 0;
+	let rollnametype;
 	
 	let item = null;
 	
@@ -201,6 +202,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 		case "attribute":
 			attributeKey = rollID;
 			attribute = rollActor.system.attributes[attributeKey];
+			rollnametype = "Attr";
 			break;
 		case "skill":
 			skillKey = rollID;
@@ -209,6 +211,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 			attribute = rollActor.system.attributes[attributeKey];
 			
 			coriolisrollType = skill.category;
+			rollnametype = "Skill";
 			break;
 		case "weapon":
 			item = rollActor.items.get(rollID);
@@ -246,7 +249,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
       skill: skill ? skill.value : 0,
       modifier: 0,
       bonus: bonus,
-      rollTitle: item.name? item.name : rollID,
+      rollTitle: item?.name? item.name : game.i18n.localize("YZECORIOLIS." + rollnametype + rollName(rollID) + "Roll"),
       pushed: false,
       isAutomatic: item?.system.automatic,
       isExplosive: item?.system.explosive,
@@ -289,6 +292,16 @@ function sanitize(string) {
 
 function firstUpperCase(string) {
 	return string[0].toUpperCase() + string.slice(1);
+}
+
+function rollName(rollname) {
+	switch (rollname) {
+		case "meleecombat": return "MeleeCombat";
+		case "rangedcombat": return "RangedCombat";
+		case "datadjinn": return "DataDjinn";
+		case "mysticpowers": return "MysticPowers";
+		default : return firstUpperCase(firstUpperCase(rollname));
+	}
 }
 
 export { ModuleName, SystemName, getTooltipDetails, openRollDialoge, openItemRollDialoge, firstUpperCase }
