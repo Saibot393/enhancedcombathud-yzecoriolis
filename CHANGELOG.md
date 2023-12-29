@@ -1,3 +1,6 @@
+## v1.3.1
+- Fixed bug that sometimes prevented skill and attribute rolls from being rolled
+
 ## v1.3.0
 - Added first part of automatic character advancement
   - Added world setting to turn this feature on/off
