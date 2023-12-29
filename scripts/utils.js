@@ -226,6 +226,8 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 					attributeKey = "agility";				
 				}
 				
+				bonus = item.system.bonus;
+				
 				skill = rollActor.system.skills[skillKey];
 				attribute = rollActor.system.attributes[attributeKey];
 			}
