@@ -533,6 +533,8 @@ Hooks.on("argonInit", (CoreHUD) => {
 		async _onLeftClick(event, special = "") {
 			if (!(event.target.id != "specialAction" || special)) return;
 			
+			ui.ARGON.interceptNextDialog(event.currentTarget.closest(".item-button"));
+			
 			var used = false;
 			
 			if (this.item.type == "weapon") {
@@ -550,6 +552,8 @@ Hooks.on("argonInit", (CoreHUD) => {
 				}
 				
 				if (used) {
+					
+					
 					openItemRollDialoge(this.item, this.actor, {modifier : modifier});
 				}
 			}
@@ -793,7 +797,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 
 		get movementMax() {
-			return this.actor.system.movementRate / canvas.scene.dimensions.distance;
+			return Math.round(this.actor.system.movementRate / canvas.scene.dimensions.distance);
 		}
 		
 		get movementUsed() {
@@ -939,7 +943,6 @@ Hooks.on("argonInit", (CoreHUD) => {
 		CORIOLISFreeActionPanel,
 		ARGON.PREFAB.PassTurnPanel
     ]);  
-	CoreHUD.defineMovementHud(null);
 	CoreHUD.defineMovementHud(CORIOLISMovementHud);
     CoreHUD.defineWeaponSets(CORIOLISWeaponSets);
 	CoreHUD.defineSupportedActorTypes(["character", "npc", "ship"]);

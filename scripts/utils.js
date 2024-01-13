@@ -193,6 +193,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 	let skill;
 	let bonus = 0;
 	let rollnametype;
+	let automaticWeapon = false;
 	
 	let item = null;
 	
@@ -215,6 +216,8 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 			break;
 		case "weapon":
 			item = rollActor.items.get(rollID);
+			
+			automaticWeapon = item.system.automatic;
 			
 			if (item) {
 				if (item.system.melee && !item?.explosive) {
@@ -265,8 +268,6 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
       features: item?.system.special ? Object.values(item.system.special).join(", ") : "",
     };
 	
-	console.log(rollData);
-	
     const chatOptions = rollActor._prepareChatRollOptions(
       "systems/yzecoriolis/templates/sidebar/roll.html",
       rollType
@@ -275,7 +276,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
       rollData.modifier = modifier;
       rollData.additionalData = additionalData;
       coriolisRoll(chatOptions, rollData);
-    }, false);
+    }, automaticWeapon);
 }
 
 function openItemRollDialoge(item, rollActor, options = {modifier : 0}) {
