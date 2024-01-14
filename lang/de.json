@@ -1,5 +1,5 @@
 {
-	"enhancedcombathud-mutant-year-zero" : {
+	"enhancedcombathud-yzecoriolis" : {
 		"Titles" : {
 			"ActionAction"				: "AKTIONEN",
 			"FreeAction"				: "FREI",
@@ -35,17 +35,17 @@
 		
 		"Descriptions" : {
 			"Flee"						: "Siehe Coriolis Regelbuch S.??",
-			"FirstAid"					: "Siehe Coriolis Regelbuch S.??",
-			"Tinkering"					: "Siehe Coriolis Regelbuch S.??",
-			"Reload"					: "Siehe Coriolis Regelbuch S.??",
-			"TakeCover"					: "Siehe Coriolis Regelbuch S.??",
-			"Duck"						: "Siehe Coriolis Regelbuch S.??",
-			"StandUp"					: "Siehe Coriolis Regelbuch S.??",
-			"DrawWeapon"				: "Siehe Coriolis Regelbuch S.??",
-			"Parry"						: "Siehe Coriolis Regelbuch S.??",
-			"Opportunity"				: "Siehe Coriolis Regelbuch S.??",
-			"Overwatch"					: "Siehe Coriolis Regelbuch S.??",
-			"Defend"					: "Siehe Coriolis Regelbuch S.??"
+			"FirstAid"					: "Siehe Coriolis Regelbuch S.94",
+			"Tinkering"					: "Siehe Coriolis Regelbuch S.83",
+			"Reload"					: "Siehe Coriolis Regelbuch S.89",
+			"TakeCover"					: "Siehe Coriolis Regelbuch S.93",
+			"Duck"						: "Siehe Coriolis Regelbuch S.83",
+			"StandUp"					: "Siehe Coriolis Regelbuch S.86",
+			"DrawWeapon"				: "Siehe Coriolis Regelbuch S.83",
+			"Parry"						: "Siehe Coriolis Regelbuch S.87",
+			"Opportunity"				: "Siehe Coriolis Regelbuch S.87",
+			"Overwatch"					: "Siehe Coriolis Regelbuch S.90",
+			"Defend"					: "Siehe Coriolis Regelbuch S.87"
 		},
 		
 		"Settings" : {
