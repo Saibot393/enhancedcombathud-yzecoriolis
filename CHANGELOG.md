@@ -1,3 +1,8 @@
+## v1.3.3
+- Fixed bug that cuased the "automatic" option not to show up for automatic weapon rolls
+- Added Argon skin to weapon rolls
+- The numbers shown in the movement hud will now be rounded
+
 ## v1.3.2
 - Fixed bug that prevented weapon boni from being used for rolls
 
