@@ -41,6 +41,16 @@ Hooks.once("init", () => {  // game.settings.get(cModuleName, "")
 	requiresReload: false
   });
   
+  game.settings.register(ModuleName, "SplitActions", {
+	name: game.i18n.localize(ModuleName+".Settings.SplitActions.name"),
+	hint: game.i18n.localize(ModuleName+".Settings.SplitActions.descrp"),
+	scope: "client",
+	config: true,
+	type: Boolean,
+	default: false,
+	requiresReload: true
+  });
+  
   game.settings.register(ModuleName, "TalentsThreshold", {
 	name: game.i18n.localize(ModuleName+".Settings.TalentsThreshold.name"),
 	hint: game.i18n.localize(ModuleName+".Settings.TalentsThreshold.descrp"),

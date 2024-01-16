@@ -2,6 +2,9 @@
 	"enhancedcombathud-yzecoriolis" : {
 		"Titles" : {
 			"ActionAction"				: "ACTIONS",
+			"SlowAction"				: "SLOW ACTIONS",
+			"NormalAction"				: "NORMAL ACTIONS",
+			"FastAction"				: "FAST ACTIONS",
 			"FreeAction"				: "FREE",
 			"Skills"					: "Skills",
 			"ROLL"						: "ROLL",
@@ -60,6 +63,10 @@
 			"AutoRollInjuries" : {
 				"name"					: "Automatically roll injuries",
 				"descrp"				: "If critical injuries should be rolled automatically when the hitpoints fall to 0"				
+			},
+			"SplitActions" : {
+				"name"					: "Split action bar",
+				"descrp"				: "If the actions should be split into different bars depending on their AP use"
 			},
 			"TalentsThreshold" : {
 				"name"					: "Talents split threshold",

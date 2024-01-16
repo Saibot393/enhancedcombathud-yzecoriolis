@@ -2,6 +2,9 @@
 	"enhancedcombathud-yzecoriolis" : {
 		"Titles" : {
 			"ActionAction"				: "AKTIONEN",
+			"SlowAction"				: "LANGSAME AKTIONEN",
+			"NormalAction"				: "NORMALE AKTIONEN",
+			"FastAction"				: "SCHNELLE AKTIONEN",
 			"FreeAction"				: "FREI",
 			"Skills"					: "Fertigkeiten",
 			"ROLL"						: "WÜRFELN",
@@ -60,6 +63,10 @@
 			"AutoRollInjuries" : {
 				"name"					: "Verletzungen automatisch Würfeln",
 				"descrp"				: "Ob kritische Verletzungen automatisch gewürfelt werden sollen, wenn die Lebenspunkte auf 0 fallen"				
+			},
+			"SplitActions" : {
+				"name"					: "Aktionenleiste aufteilen",
+				"descrp"				: "Ob Aktionen basierend auf ihren AP Kosten in unterschiedliche Leisten aufgespaltet werden sollen"
 			},
 			"TalentsThreshold" : {
 				"name"					: "Talente teilungs Grenze",

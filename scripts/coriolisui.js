@@ -11,9 +11,17 @@ Hooks.on("argonInit", (CoreHUD) => {
 	registerCORIOLISECHSItems();
   
 	function consumeAction(amount) {
-		if (ui.ARGON.components.main[0].currentActions >= amount) {
-			ui.ARGON.components.main[0].currentActions = ui.ARGON.components.main[0].currentActions - amount;
-			return true;
+		if (game.settings.get(ModuleName, "SplitActions")) {
+			if (ui.ARGON.components.main[2].currentActions >= amount) {
+				ui.ARGON.components.main[2].currentActions = ui.ARGON.components.main[2].currentActions - amount;
+				return true;
+			}
+		}
+		else {
+			if (ui.ARGON.components.main[0].currentActions >= amount) {
+				ui.ARGON.components.main[0].currentActions = ui.ARGON.components.main[0].currentActions - amount;
+				return true;
+			}
 		}
 		
 		return false;
@@ -407,8 +415,8 @@ Hooks.on("argonInit", (CoreHUD) => {
 			return `${game.i18n.localize(SystemName+".Attributes")} & ${game.i18n.localize(ModuleName+".Titles.Skills")}`;
 		}
 	}
-  
-    class CORIOLISActionActionPanel extends ARGON.MAIN.ActionPanel {
+	
+    class CORIOLISSlowActionPanel extends ARGON.MAIN.ActionPanel {
 		constructor(...args) {
 			super(...args);
 			
@@ -416,15 +424,15 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 
 		get label() {
-			return ModuleName+".Titles.ActionAction";
+			return ModuleName+".Titles.SlowAction";
 		}
 		
 		get maxActions() {
-            return 3;
+            return 1;
         }
 		
 		get currentActions() {
-			return this.actionsLeft;
+			return Math.floor(ui.ARGON.components.main[2].currentActions / 3);
 		}
 		
 		set currentActions(value) {
@@ -438,7 +446,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 		}
 		
 		async _getButtons() {
-			const specialActions = Object.values(CORIOLISECHActionItems);
+			const specialActions = Object.values(CORIOLISECHActionItems).filter(action => action.flags[ModuleName].APconsumption == 3); //slow actions only
 
 			let buttons = [];
 			
@@ -463,10 +471,140 @@ Hooks.on("argonInit", (CoreHUD) => {
 			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])));
 			buttons.push(...talentbuttons);
 			buttons.push(new CORIOLISButtonPanelButton({type: "gear", color: 0}));
-			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[2]), new CORIOLISSpecialActionButton(specialActions[3])));
-			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[4]), new CORIOLISSpecialActionButton(specialActions[5])));
-			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[6]), new CORIOLISSpecialActionButton(specialActions[7])));
-			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[8]), new CORIOLISSpecialActionButton(specialActions[9])));
+			
+			return buttons.filter(button => button.items == undefined || button.items.length);
+		}
+    }
+  
+    class CORIOLISActionActionPanel extends ARGON.MAIN.ActionPanel {
+		constructor(...args) {
+			super(...args);
+			
+			this.actionsLeft = this.maxActions;
+		}
+
+		get label() {
+			if (game.settings.get(ModuleName, "SplitActions")) {
+				return ModuleName+".Titles.NormalAction";
+			}
+			else {
+				return ModuleName+".Titles.ActionAction";
+			}
+		}
+		
+		get maxActions() {
+			if (game.settings.get(ModuleName, "SplitActions")) {
+				return 1;
+			}
+			else {
+				return 3;
+			}
+        }
+		
+		get currentActions() {
+			if (game.settings.get(ModuleName, "SplitActions")) {
+				return Math.floor(ui.ARGON.components.main[2].currentActions / 2);
+			}
+			else {
+				return this.actionsLeft;
+			}
+		}
+		
+		set currentActions(value) {
+			this.actionsLeft = value;
+			this.updateActionUse();
+		}
+		
+		_onNewRound(combat) {
+			this.actionsLeft = this.maxActions;
+			this.updateActionUse();
+		}
+		
+		async _getButtons() {
+			let specialActions = Object.values(CORIOLISECHActionItems);
+			
+			if (game.settings.get(ModuleName, "SplitActions")) {
+				specialActions = specialActions.filter(action => action.flags[ModuleName].APconsumption == 2); //normal actions only
+			}
+
+			let buttons = [];
+			
+			let talentbuttons = [];
+			let generalBlacklist = [];
+			const talentsThreshold = game.settings.get(ModuleName, "TalentsThreshold");
+			
+			let talents = this.actor.items.filter(item => item.type == "talent");
+			
+			for (const subtype of talenttypes.filter(type => type != "general")) {
+				if (talents.filter(item => item.system.category == subtype).length >= talentsThreshold) {
+					talentbuttons.push(new CORIOLISButtonPanelButton({type: "talent", subtype: subtype, color: 0}));
+					generalBlacklist.push(subtype);
+				}
+			}
+			
+			if (talents.find(item => !generalBlacklist.includes(item.system.category))) {
+				talentbuttons.unshift(new CORIOLISButtonPanelButton({type: "talent", subtype: "general", color: 0, typeblacklist : generalBlacklist}));
+			}
+			
+			if (game.settings.get(ModuleName, "SplitActions")) {
+				buttons.push(new CORIOLISItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
+				buttons.push(new CORIOLISSpecialActionButton(specialActions[0]));
+			}
+			else {
+				buttons.push(new CORIOLISItemButton({ item: null, isWeaponSet: true, isPrimary: true }));
+				buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[0]), new CORIOLISSpecialActionButton(specialActions[1])));
+				buttons.push(...talentbuttons);
+				buttons.push(new CORIOLISButtonPanelButton({type: "gear", color: 0}));
+				buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[2]), new CORIOLISSpecialActionButton(specialActions[3])));
+				buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[4]), new CORIOLISSpecialActionButton(specialActions[5])));
+				buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[6]), new CORIOLISSpecialActionButton(specialActions[7])));
+				buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[8]), new CORIOLISSpecialActionButton(specialActions[9])));
+			}
+			
+			return buttons.filter(button => button.items == undefined || button.items.length);
+		}
+    }
+	
+    class CORIOLISFastActionPanel extends ARGON.MAIN.ActionPanel {
+		constructor(...args) {
+			super(...args);
+			
+			this.actionsLeft = this.maxActions;
+		}
+
+		get label() {
+			return ModuleName+".Titles.FastAction";
+		}
+		
+		get maxActions() {
+            return 3;
+        }
+		
+		get currentActions() {
+			return this.actionsLeft;
+		}
+		
+		set currentActions(value) {
+			this.actionsLeft = value;
+			this.updateActionUse();
+			ui.ARGON.components.main[0].updateActionUse();//Update slow actions
+			ui.ARGON.components.main[1].updateActionUse();//Update normal actions
+		}
+		
+		_onNewRound(combat) {
+			this.actionsLeft = this.maxActions;
+			this.updateActionUse();
+		}
+		
+		async _getButtons() {
+			const specialActions = Object.values(CORIOLISECHActionItems).filter(action => action.flags[ModuleName].APconsumption == 1); //fast actions only;
+
+			let buttons = [];
+			
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[1]), new CORIOLISSpecialActionButton(specialActions[2])));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[3]), new CORIOLISSpecialActionButton(specialActions[4])));
+			buttons.push(new ARGON.MAIN.BUTTONS.SplitButton(new CORIOLISSpecialActionButton(specialActions[5]), new CORIOLISSpecialActionButton(specialActions[0])));
+			buttons.push(new CORIOLISSpecialActionButton(specialActions[6]));
 			
 			return buttons.filter(button => button.items == undefined || button.items.length);
 		}
@@ -936,13 +1074,25 @@ Hooks.on("argonInit", (CoreHUD) => {
     }
 	*/
   
-    CoreHUD.definePortraitPanel(CORIOLISPortraitPanel);
-    CoreHUD.defineDrawerPanel(CORIOLISDrawerPanel);
-    CoreHUD.defineMainPanels([
+	let ActionPanels = [
 		CORIOLISActionActionPanel,
 		CORIOLISFreeActionPanel,
 		ARGON.PREFAB.PassTurnPanel
-    ]);  
+	];
+	
+	if (game.settings.get(ModuleName, "SplitActions")) {
+		ActionPanels = [
+			CORIOLISSlowActionPanel,
+			CORIOLISActionActionPanel,
+			CORIOLISFastActionPanel,
+			CORIOLISFreeActionPanel,
+			ARGON.PREFAB.PassTurnPanel
+		];
+	}
+  
+    CoreHUD.definePortraitPanel(CORIOLISPortraitPanel);
+    CoreHUD.defineDrawerPanel(CORIOLISDrawerPanel);
+    CoreHUD.defineMainPanels(ActionPanels);  
 	CoreHUD.defineMovementHud(CORIOLISMovementHud);
     CoreHUD.defineWeaponSets(CORIOLISWeaponSets);
 	CoreHUD.defineSupportedActorTypes(["character", "npc", "ship"]);
