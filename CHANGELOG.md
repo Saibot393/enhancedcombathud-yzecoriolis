@@ -1,3 +1,6 @@
+## v1.4.0
+- Added client setting "Split action bar" to split the actions into distinct bars based on their AP cost
+
 ## v1.3.4
 - Fixed german translation
 - Added page numbers for descriptions in german translation (thanks to [kagedansa](https://github.com/kagedansa))
