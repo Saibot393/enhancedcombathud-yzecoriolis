@@ -1,3 +1,7 @@
+## v1.3.4
+- Fixed german translation
+- Added page numbers for descriptions in german translation (thanks to [kagedansa](https://github.com/kagedansa))
+
 ## v1.3.3
 - Fixed bug that cuased the "automatic" option not to show up for automatic weapon rolls
 - Added Argon skin to weapon rolls
