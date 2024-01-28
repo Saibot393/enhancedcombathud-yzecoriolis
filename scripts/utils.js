@@ -307,4 +307,14 @@ function rollName(rollname) {
 	}
 }
 
-export { ModuleName, SystemName, getTooltipDetails, openRollDialoge, openItemRollDialoge, firstUpperCase }
+function replacewords(text, words = {}){
+	let localtext = text;
+	
+	for (let word of Object.keys(words)) {
+		localtext = localtext.replace("{" + word + "}", words[word]);
+	}
+		
+	return localtext;
+}
+
+export { ModuleName, SystemName, getTooltipDetails, openRollDialoge, openItemRollDialoge, firstUpperCase, replacewords }

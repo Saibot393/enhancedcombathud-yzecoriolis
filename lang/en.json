@@ -51,6 +51,10 @@
 			"Defend"					: "See Coriolis core rules book p.??"
 		},
 		
+		"Messages" : {
+			"GainedXP" 					: "{Actor} gained {XP} experience points:"
+		},
+		
 		"Settings" : {
 			"useXPautomation" : {
 				"name"					: "Use XP automation",

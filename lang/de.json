@@ -51,6 +51,10 @@
 			"Defend"					: "Siehe Coriolis Regelbuch S.87"
 		},
 		
+		"Messages" : {
+			"GainedXP" 					: "{Actor} hat {XP} Erfahrungspunkte erhalten:"
+		},
+		
 		"Settings" : {
 			"useXPautomation" : {
 				"name"					: "Nutze Erfahrungs Automatisierung",
