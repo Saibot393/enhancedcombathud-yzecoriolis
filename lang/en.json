@@ -33,7 +33,8 @@
 			"OpenXPMenu"				: "Open character advancement menu",
 			"CharacterAdvancement"		: "Character advancement",
 			"CheckWhichApplies"			: "Check all questions you can answer with \"yes\":",
-			"confirmXP"					: "Confirm"
+			"confirmXP"					: "Confirm",
+			"XPAvailable"				: "You can spend {XPleft}/{XPmax} experience points to improve {Actor}:"
 		},
 		
 		"Descriptions" : {

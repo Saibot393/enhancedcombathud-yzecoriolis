@@ -33,7 +33,8 @@
 			"OpenXPMenu"				: "Öffne Charakterverbesserungs Menü",
 			"CharacterAdvancement"		: "Charakterverbesserungs",
 			"CheckWhichApplies"			: "Kreuze alle Fragen an welche du mit \"ja\" beantworten kannst:",
-			"confirmXP"					: "Bestätigen"
+			"confirmXP"					: "Bestätigen",
+			"XPAvailable"				: "Du kannst {XPleft}/{XPmax} Erfahrungspunkte verwenden um {Actor} zu verbessern:"
 		},
 		
 		"Descriptions" : {
