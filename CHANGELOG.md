@@ -1,3 +1,6 @@
+## v1.4.1
+- Added report card for automated experience point gain
+
 ## v1.4.0
 - Added client setting "Split action bar" to split the actions into distinct bars based on their AP cost
 
