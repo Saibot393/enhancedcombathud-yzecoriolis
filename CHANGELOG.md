@@ -1,3 +1,6 @@
+## v1.5.1
+- Fix for system update compatibility
+  
 ## v1.5.0
 - Added second part of automatic character advancement
   - The advance indicator on the Argon HUD portrait can now be used to open an additional menu to spend xp on skills and talents if enough xp have been accumulated
