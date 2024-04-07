@@ -1,6 +1,6 @@
 const ModuleName = "enhancedcombathud-yzecoriolis";
 const SystemName = "YZECORIOLIS";
-import { coriolisModifierDialog, coriolisRoll } from "/systems/yzecoriolis/module/coriolis-roll.js";
+import { coriolisRoll } from "/systems/yzecoriolis/module/coriolis-roll.js";
 
 async function getTooltipDetails(item, actortype) {
 	let title, description, itemType, creatureType, skillmodifiers, attributemodifiers, validskills, techTier, category, subtitle, subtitlecolor, range, automatic, power, radius, damage, bonus, quantity, initiative, crit, explosive, specials, hpbonus, mpbonus;
@@ -272,7 +272,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
       "systems/yzecoriolis/templates/sidebar/roll.html",
       rollType
     );
-    coriolisModifierDialog((modifier, additionalData) => {
+    window.CoriolisModifierDialog((modifier, additionalData) => {
       rollData.modifier = modifier;
       rollData.additionalData = additionalData;
       coriolisRoll(chatOptions, rollData);
