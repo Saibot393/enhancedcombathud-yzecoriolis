@@ -272,11 +272,15 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
       "systems/yzecoriolis/templates/sidebar/roll.html",
       rollType
     );
-    window.CoriolisModifierDialog((modifier, additionalData) => {
+	
+	new CoriolisModifierDialog(rollData, chatOptions).render(true);   
+	/*
+    new window.CoriolisModifierDialog((modifier, additionalData) => {
       rollData.modifier = modifier;
       rollData.additionalData = additionalData;
       coriolisRoll(chatOptions, rollData);
-    }, automaticWeapon);
+    }, automaticWeapon).render(true);
+	*/
 }
 
 function openItemRollDialoge(item, rollActor, options = {modifier : 0}) {
