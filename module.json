@@ -7,10 +7,10 @@
     "name": "saibot"
     }
   ],
-  "version": "1.5.2",
+  "version": "2.0.0",
   "compatibility": {
     "minimum": "11",
-    "verified": "11"
+    "verified": "12"
   },
   "socket": "true",
   "languages": [
@@ -50,14 +50,9 @@
 		}
 	]
   },
-  "compatibility": {
-	"minimum": "11",
-	"verified": "11"
-  },
   "url": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis",
-  "download": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/archive/refs/tags/v1.5.2.zip",
+  "download": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/archive/refs/tags/v2.0.0.zip",
   "manifest": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/releases/latest/download/module.json",
   "readme": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/blob/main/README.md",
-  "changelog": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/blob/main/CHANGELOG.md",
-  "allowBugReporter": true
+  "changelog": "https://github.com/Saibot393/enhancedcombathud-yzecoriolis/blob/main/CHANGELOG.md"
 }

@@ -193,7 +193,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 	let skill;
 	let bonus = 0;
 	let rollnametype;
-	let automaticWeapon = false;
+	//let automaticWeapon = false;
 	
 	let item = null;
 	
@@ -217,7 +217,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
 		case "weapon":
 			item = rollActor.items.get(rollID);
 			
-			automaticWeapon = item.system.automatic;
+			//automaticWeapon = item.system.automatic;
 			
 			if (item) {
 				if (item.system.melee && !item?.explosive) {
@@ -258,6 +258,7 @@ function openRollDialoge(rollType, rollID, rollActor, options = {modifier : 0}) 
       pushed: false,
       isAutomatic: item?.system.automatic,
       isExplosive: item?.system.explosive,
+	  automaticFire: item?.system.automatic && options.fullAuto,
       blastPower: item?.system.blastPower,
       blastRadius: item?.system.blastRadius,
       damage: item?.system.damage,

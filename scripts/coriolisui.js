@@ -703,9 +703,7 @@ Hooks.on("argonInit", (CoreHUD) => {
 				}
 				
 				if (used) {
-					
-					
-					openItemRollDialoge(this.item, this.actor, {modifier : modifier});
+					openItemRollDialoge(this.item, this.actor, {modifier : modifier/*, fullAuto : true*/});
 				}
 			}
 			
