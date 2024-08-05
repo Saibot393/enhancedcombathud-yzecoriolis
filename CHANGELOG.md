@@ -1,3 +1,6 @@
+## v2.0.0
+- v12 compatibility
+
 ## v1.5.2
 - Compatibility fix for new system rolls
 
